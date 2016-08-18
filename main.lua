@@ -1,26 +1,30 @@
 io.stdout:setvbuf('no')
-debug = true
+-- debug = true
 
 function debug_print()
    love.graphics.setColor(0, 0, 0)
-   love.graphics.rectangle('fill', 25, 35, 150, 50)
+   love.graphics.rectangle('fill', 25, 35, 150, 100)
 
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('bg.x: ' .. bg.x,  50, 50)
+
+   love.graphics.setColor(255, 255, 255)
+   love.graphics.print('meter strength: ' .. meter.strength,  50, 80)
 end
 
 function love.load(arg)
 	love.window.setMode( 1280, 720)
-	
+
 	-- Background Scrolling
 	bg = { x = 0, y = 0 }
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 	love.graphics.setBackgroundColor( 0, 0, 0 )
-	scroll = {rate = 80, step = 500, counter = 0}
+	scroll = {rate = 80, step = 250, counter = 0}
 	canscroll = true
 
 	-- Football Target
-	target = { x = -4000, reached = false }
+	target = { x = -4000, reached = true }
+	meter = { strength = 0, max = 250, speed = 5, direction = 'right' }
 
 end
 
@@ -47,10 +51,42 @@ function love.update(dt)
 		scroll.counter = 0
 	end
 
+	-- Flucuate Power Meter
+	if meter.strength < meter.max and 
+		meter.direction == 'right' then
+
+		meter.strength = meter.strength + 1 * meter.speed
+
+	elseif meter.strength > 0 and 
+		meter.direction == 'left' then
+		
+		meter.strength = meter.strength - 1 * meter.speed
+	end
+
+	if meter.strength == meter.max then
+		meter.direction = 'left'
+
+	elseif meter.strength == 0 then
+		meter.direction = 'right'
+	end
+
+
 end
 
 function love.draw()
+
+	-- Background 
    love.graphics.draw(bg.img, bg.x, bg.y)
+
+   -- Kick-O-Meter Frame
+   love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.rectangle('fill', 1000, 50, 252, 30)
+   love.graphics.setColor(0, 0, 0)
+   love.graphics.rectangle('fill', 1002, 52, 248, 26)
+
+   -- Kick-
+   love.graphics.setColor(118, 255, 97)
+   love.graphics.rectangle('fill', 1002, 52, meter.strength, 26)
 
    
    -- Debug output
@@ -58,4 +94,16 @@ function love.draw()
    		debug_print()
    	end
 
+   	-- Reset color
+   	love.graphics.setColor(255, 255, 255, 255)
 end
+
+
+
+
+
+
+
+
+
+
