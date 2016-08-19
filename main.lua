@@ -1,5 +1,6 @@
 io.stdout:setvbuf('no')
--- debug = true
+debug = true
+local shine = require 'shine'
 
 function debug_print()
 
@@ -24,16 +25,37 @@ function love.load(arg)
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 	love.keyboard.setKeyRepeat( false )
 
+	-- Shaders
+	local grain = shine.filmgrain()
+	grain.opacity = 0.1
+
+	local vignette = shine.vignette()
+	vignette.opacity = 0.5
+
+	local scanlines = shine.scanlines()
+	scanlines.opacity = 0.1
+
+	local crt = shine.crt()
+	crt.x = 0.05
+	crt.y = 0.05
+
+	post_effect = grain:chain(vignette):chain(scanlines):chain(crt)
+
 	-- Background Scrolling
 	bg = { x = 0, y = 0 }
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	scroll = { interval = 0.1, x_step = 64}
 
+	-- Monitor Frame
+	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
+
 	-- Football Target
 	kick = { x = 0, ready = true, multiplier = 17, in_progress = false, complete = false }
 	meter = { strength = 0, max = 250, speed = 10, direction = 'right', enabled = true }
 	goal = { x = -3400, message = nil }
+
+	love.graphics.setDefaultFilter("nearest", "nearest")
 
 end
 
@@ -117,39 +139,44 @@ end
 
 function love.draw()
 
-	-- Background 
-   love.graphics.draw(bg.img, bg.x, bg.y)
+	post_effect:draw(function()
 
-   -- Kick-O-Meter
-   love.graphics.setColor(255, 255, 255, 255)
-   love.graphics.rectangle('fill', 1000, 50, 252, 30) -- Frame
-   love.graphics.setColor(0, 0, 0)
-   love.graphics.rectangle('fill', 1002, 52, 248, 26) -- Background
-   love.graphics.setColor(118, 255, 97)
-   love.graphics.rectangle('fill', 1002, 52, meter.strength, 26) -- Kick bar
+		-- Background 
+	   love.graphics.draw(bg.img, bg.x, bg.y)
 
-   -- Success / Failure of Kick
+	   -- Kick-O-Meter
+	   love.graphics.setColor(255, 255, 255, 255)
+	   love.graphics.rectangle('fill', 1000, 50, 252, 30) -- Frame
+	   love.graphics.setColor(0, 0, 0)
+	   love.graphics.rectangle('fill', 1002, 52, 248, 26) -- Background
+	   love.graphics.setColor(118, 255, 97)
+	   love.graphics.rectangle('fill', 1002, 52, meter.strength, 26) -- Kick bar
 
-	if kick.in_progress or kick.complete then 
-		love.graphics.setColor(99, 205, 83, 255)
-		love.graphics.circle("fill", 1150, 450, 10, 50) -- Football
-	end
+	   -- Success / Failure of Kick
 
-	if kick.complete then
+		if kick.in_progress or kick.complete then 
+			love.graphics.setColor(99, 205, 83, 255)
+			love.graphics.circle("fill", 1150, 450, 10, 50) -- Football
+		end
 
-		love.graphics.setColor(38, 86, 95, 255)
-   		love.graphics.rectangle('fill', 320, 270, 660, 210) -- Frame
+		if kick.complete then
 
-	    love.graphics.setColor(0, 0, 0)
-   		love.graphics.rectangle('fill', 352, 302, 596, 146) -- Background
+			love.graphics.setColor(38, 86, 95, 255)
+	   		love.graphics.rectangle('fill', 320, 270, 660, 210) -- Frame
 
-		love.graphics.setFont(msg_font)
-   		love.graphics.setColor(255, 255, 255, 255)
-	    love.graphics.print(goal.message, 530, 350) -- Message
+		    love.graphics.setColor(0, 0, 0)
+	   		love.graphics.rectangle('fill', 352, 302, 596, 146) -- Background
 
-   	end
+			love.graphics.setFont(msg_font)
+	   		love.graphics.setColor(255, 255, 255, 255)
+		    love.graphics.print(goal.message, 530, 350) -- Message
 
-   
+	   	end
+
+    end)
+
+   -- love.graphics.draw(frame_img, 0, 0)
+
    -- Debug output
    if debug == true then
    		debug_print()
