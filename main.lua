@@ -32,7 +32,7 @@ function love.load(arg)
 
 	-- Football Target
 	kick = { x = 0, ready = true, multiplier = 17, in_progress = false, complete = false }
-	meter = { strength = 0, max = 252, speed = 9, direction = 'right', enabled = true }
+	meter = { strength = 0, max = 250, speed = 10, direction = 'right', enabled = true }
 	goal = { x = -3400, message = nil }
 
 end
