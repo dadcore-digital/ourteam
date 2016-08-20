@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = true
+-- debug = true
 local shine = require 'shine'
 
 function debug_print()
@@ -42,7 +42,7 @@ function love.load(arg)
 	post_effect = grain:chain(vignette):chain(scanlines):chain(crt)
 
 	-- Background Scrolling
-	bg = { x = 0, y = 0 }
+	bg = { x = 0, y = -24 }
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	scroll = { interval = 0.1, x_step = 64}
@@ -146,11 +146,11 @@ function love.draw()
 
 	   -- Kick-O-Meter
 	   love.graphics.setColor(255, 255, 255, 255)
-	   love.graphics.rectangle('fill', 1000, 50, 252, 30) -- Frame
+	   love.graphics.rectangle('fill', 950, 60, 252, 30) -- Frame
 	   love.graphics.setColor(0, 0, 0)
-	   love.graphics.rectangle('fill', 1002, 52, 248, 26) -- Background
+	   love.graphics.rectangle('fill', 952, 62, 248, 26) -- Background
 	   love.graphics.setColor(118, 255, 97)
-	   love.graphics.rectangle('fill', 1002, 52, meter.strength, 26) -- Kick bar
+	   love.graphics.rectangle('fill', 952, 62, meter.strength, 26) -- Kick bar
 
 	   -- Success / Failure of Kick
 
@@ -174,8 +174,8 @@ function love.draw()
 	   	end
 
     end)
-
-   -- love.graphics.draw(frame_img, 0, 0)
+	love.graphics.setColor(255, 255, 255, 255)
+   love.graphics.draw(frame_img, 0, 0)
 
    -- Debug output
    if debug == true then
@@ -183,7 +183,6 @@ function love.draw()
    	end
 
    	-- Reset color
-   	love.graphics.setColor(255, 255, 255, 255)
 end
 
 
