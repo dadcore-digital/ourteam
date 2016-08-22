@@ -1,12 +1,12 @@
 io.stdout:setvbuf('no')
--- debug = true
+debug = true
 local shine = require 'shine'
 
 function debug_print()
 
    love.graphics.setNewFont(12)
    love.graphics.setColor(0, 0, 0)
-   love.graphics.rectangle('fill', 25, 35, 150, 100)
+   love.graphics.rectangle('fill', 25, 35, 180, 130)
 
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('bg.x: ' .. bg.x,  50, 50)
@@ -17,13 +17,16 @@ function debug_print()
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('kick: ' .. kick.x,  50, 100)
 
+   love.graphics.setColor(255, 255, 255)
+   love.graphics.print('player.x' .. player.x,  50, 130)
+
+
 end
 
 function love.load(arg)
 	love.window.setMode( 1280, 720)
-	-- love.window.setFullscreen(true, 'exclusive')
+	-- love.window.setFullscreen(true)
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
-	love.keyboard.setKeyRepeat( false )
 
 	-- Shaders
 	local grain = shine.filmgrain()
@@ -42,10 +45,12 @@ function love.load(arg)
 	post_effect = grain:chain(vignette):chain(scanlines):chain(crt)
 
 	-- Background Scrolling
-	bg = { x = 0, y = -24 }
+	bg = { initial_x = -300, y = -24 }
+	bg.x = bg.initial_x
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	scroll = { interval = 0.1, x_step = 64}
+
 
 	-- Monitor Frame
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
@@ -54,6 +59,12 @@ function love.load(arg)
 	kick = { x = 0, ready = true, multiplier = 17, in_progress = false, complete = false }
 	meter = { strength = 0, max = 250, speed = 10, direction = 'right', enabled = true }
 	goal = { x = -3400, message = nil }
+
+	-- Player
+
+	player = { initial_x = 600, y = 400 }
+	player.x = player.initial_x
+	player.img = love.graphics.newImage('assets/graphics/sprites/player.png')
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -70,6 +81,7 @@ function love.update(dt)
 		ctr = (ctr or 0) + dt
 		if ctr > scroll.interval then
 		  bg.x = bg.x - scroll.x_step
+		  player.x = player.x - scroll.x_step
 		  ctr = ctr - scroll.interval
 		end
 
@@ -112,7 +124,7 @@ function love.update(dt)
 	--! Show result of kick !--
 	if kick.complete then
 		-- Set success / failure message
-		if kick.x <= -3400 then
+		if kick.x <= -3380 then
 			goal.message = 'SUCCESS!'
 		else
 			goal.message = 'FAILURE!'
@@ -123,7 +135,8 @@ function love.update(dt)
 			kick.in_progress = false
 			kick.complete = false
 			kick.x = 0
-			bg.x = 0
+			bg.x = bg.initial_x
+			player.x = player.initial_x
 			meter.strength = 0
 			meter.direction = 'right'
 			meter.enabled = true
@@ -142,7 +155,10 @@ function love.draw()
 	post_effect:draw(function()
 
 		-- Background 
-	   love.graphics.draw(bg.img, bg.x, bg.y)
+		love.graphics.draw(bg.img, bg.x, bg.y)
+
+		-- Player
+	    love.graphics.draw(player.img, player.x, player.y)
 
 	   -- Kick-O-Meter
 	   love.graphics.setColor(255, 255, 255, 255)
@@ -175,7 +191,7 @@ function love.draw()
 
     end)
 	love.graphics.setColor(255, 255, 255, 255)
-   love.graphics.draw(frame_img, 0, 0)
+    love.graphics.draw(frame_img, 0, 0)
 
    -- Debug output
    if debug == true then
