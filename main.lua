@@ -6,7 +6,7 @@ function debug_print()
 
    love.graphics.setNewFont(12)
    love.graphics.setColor(0, 0, 0)
-   love.graphics.rectangle('fill', 25, 35, 180, 130)
+   love.graphics.rectangle('fill', 25, 35, 180, 160)
 
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('bg.x: ' .. bg.x,  50, 50)
@@ -19,6 +19,9 @@ function debug_print()
 
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('player.x' .. player.x,  50, 130)
+
+   love.graphics.setColor(255, 255, 255)
+   love.graphics.print('ball.x' .. ball.x,  50, 160)
 
 
 end
@@ -56,22 +59,44 @@ function love.load(arg)
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
 	-- Football Target
-	kick = { x = 0, ready = true, multiplier = 17, in_progress = false, complete = false }
+	kick = { x = 0, ready = true, multiplier = 17, beginning = false, in_progress = false, complete = false }
 	meter = { strength = 0, max = 250, speed = 10, direction = 'right', enabled = true }
 	goal = { x = -3400, message = nil }
 
 	-- Player
 
-	player = { initial_x = 600, y = 400 }
+	player = { initial_x = 500, y = 400 }
 	player.x = player.initial_x
 	player.img = love.graphics.newImage('assets/graphics/sprites/player.png')
+
+	-- Ball
+	ball = { initial_x = 700, initial_y = 442, scroll_start_offset_x = 350 }
+	ball.x = ball.initial_x
+	ball.y = ball.initial_y
+	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
+
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 end
 
 function love.update(dt)
-	-- require('lovebird').update()
+	require('lovebird').update()
+
+	--! Animate ball but don't start scrolling yet !--
+
+	if kick.beginning and 
+		ball.x <= ball.initial_x + ball.scroll_start_offset_x then
+		ctr = (ctr or 0) + dt
+		if ctr > scroll.interval then
+			ball.x = ball.x + 32
+			ctr = ctr - 0.05
+		end
+	elseif kick.beginning and 
+		ball.x > ball.initial_x + ball.scroll_start_offset_x then
+		kick.beginning = false
+		kick.in_progress = true
+	end
 
 	--! Auto scroll background until target is reached !--
 	if kick.in_progress then
@@ -117,14 +142,18 @@ function love.update(dt)
 	if love.keyboard.isDown('space') and kick.ready then
 		meter.enabled = false
 		kick.x = ( (meter.strength + 1) * kick.multiplier) * -1
-		kick.in_progress = true
+		kick.x = -3500
 		kick.ready = false
+		kick.beginning = true
 	end
+
+
+
 
 	--! Show result of kick !--
 	if kick.complete then
 		-- Set success / failure message
-		if kick.x <= -3380 then
+		if kick.x <= -3500 then
 			goal.message = 'SUCCESS!'
 		else
 			goal.message = 'FAILURE!'
@@ -132,14 +161,17 @@ function love.update(dt)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
+			kick.beginning = false
 			kick.in_progress = false
 			kick.complete = false
 			kick.x = 0
 			bg.x = bg.initial_x
 			player.x = player.initial_x
+			ball.x = ball.initial_x
 			meter.strength = 0
 			meter.direction = 'right'
 			meter.enabled = true
+
 		end
 	end
 end
@@ -160,6 +192,9 @@ function love.draw()
 		-- Player
 	    love.graphics.draw(player.img, player.x, player.y)
 
+	    -- Ball
+		love.graphics.draw(ball.img, ball.x, ball.y)	    
+
 	   -- Kick-O-Meter
 	   love.graphics.setColor(255, 255, 255, 255)
 	   love.graphics.rectangle('fill', 950, 60, 252, 30) -- Frame
@@ -169,11 +204,6 @@ function love.draw()
 	   love.graphics.rectangle('fill', 952, 62, meter.strength, 26) -- Kick bar
 
 	   -- Success / Failure of Kick
-
-		if kick.in_progress or kick.complete then 
-			love.graphics.setColor(99, 205, 83, 255)
-			love.graphics.circle("fill", 1150, 450, 10, 50) -- Football
-		end
 
 		if kick.complete then
 
