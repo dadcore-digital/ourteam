@@ -2,6 +2,8 @@ io.stdout:setvbuf('no')
 debug = true
 local shine = require 'shine'
 
+local meter = require 'meter'
+
 function debug_print()
 
    love.graphics.setNewFont(12)
@@ -50,7 +52,10 @@ function love.load(arg)
 	-- Background Scrolling
 	bg = { initial_x = -300, y = -24 }
 	bg.x = bg.initial_x
+
+	-- Set non-cheering crowd as default as well as animation frame
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
+
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	scroll = { interval = 0.1, x_step = 64}
 
@@ -60,7 +65,6 @@ function love.load(arg)
 
 	-- Football Target
 	kick = { x = 0, ready = true, multiplier = 17, beginning = false, in_progress = false, complete = false }
-	meter = { strength = 0, max = 250, speed = 10, direction = 'right', enabled = true }
 	goal = { x = -3400, message = nil }
 
 	-- Player
@@ -70,7 +74,12 @@ function love.load(arg)
 	player.img = love.graphics.newImage('assets/graphics/sprites/player.png')
 
 	-- Ball
-	ball = { initial_x = 700, initial_y = 442, scroll_start_offset_x = 350 }
+	ball = {
+			initial_x = 700,
+			initial_y = 442,
+			scroll_start_offset_x = 350,
+			apogee_offset_y = 100
+		}
 	ball.x = ball.initial_x
 	ball.y = ball.initial_y
 	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
@@ -83,19 +92,47 @@ end
 function love.update(dt)
 	require('lovebird').update()
 
-	--! Animate ball but don't start scrolling yet !--
+	--! Set Animation Counter !--
+	ctr = (ctr or 0) + dt
+	bg_ctr = (bg_ctr or 0) 
 
+	--! Animate ball but don't start scrolling yet !--
 	if kick.beginning and 
 		ball.x <= ball.initial_x + ball.scroll_start_offset_x then
-		ctr = (ctr or 0) + dt
-		if ctr > scroll.interval then
-			ball.x = ball.x + 32
-			ctr = ctr - 0.05
-		end
+
+	-- Animate ball
+	if ctr > scroll.interval then
+		ball.x = ball.x + 64
+	end
+
 	elseif kick.beginning and 
 		ball.x > ball.initial_x + ball.scroll_start_offset_x then
 		kick.beginning = false
 		kick.in_progress = true
+	end
+
+	--! Animate ball rise and fall !--
+
+	if kick.beginning or kick.in_progress then
+
+		-- Decide whether to animate ball y rise
+		animate_ball_rise = ball.y > ball.apogee_offset_y or false
+
+		-- Decide whether to animate ball y fall
+		animate_ball_fall = bg.x <= -3000 or false
+
+
+		if ctr > scroll.interval then
+	
+			if animate_ball_rise then
+				ball.y = ball.y - 20
+			end
+
+			if animate_ball_fall then
+				ball.y = ball.y + 32
+			end
+		end
+
 	end
 
 	--! Auto scroll background until target is reached !--
@@ -103,11 +140,9 @@ function love.update(dt)
 
 		-- Chunky scrolling to only scroll every x/fractions of a second
 		-- Also specifies how many x coords to step forward each scroll
-		ctr = (ctr or 0) + dt
 		if ctr > scroll.interval then
 		  bg.x = bg.x - scroll.x_step
 		  player.x = player.x - scroll.x_step
-		  ctr = ctr - scroll.interval
 		end
 
 		-- Stop moving background when target reached
@@ -117,38 +152,18 @@ function love.update(dt)
 		end
 	end
 
-	--! Flucuate Power Meter !--
-	if meter.enabled then
-		if meter.strength < meter.max and 
-			meter.direction == 'right' then
 
-			meter.strength = meter.strength + 1 * meter.speed
 
-		elseif meter.strength > 0 and 
-			meter.direction == 'left' then
-			
-			meter.strength = meter.strength - 1 * meter.speed
-		end
-
-		if meter.strength == meter.max then
-			meter.direction = 'left'
-
-		elseif meter.strength == 0 then
-			meter.direction = 'right'
-		end
-	end
+	--! Flucuate Power Meter!--
+	meter.fluctuate()
 
 	--! Stop Power Meter !--
 	if love.keyboard.isDown('space') and kick.ready then
 		meter.enabled = false
 		kick.x = ( (meter.strength + 1) * kick.multiplier) * -1
-		kick.x = -3500
 		kick.ready = false
 		kick.beginning = true
 	end
-
-
-
 
 	--! Show result of kick !--
 	if kick.complete then
@@ -168,12 +183,19 @@ function love.update(dt)
 			bg.x = bg.initial_x
 			player.x = player.initial_x
 			ball.x = ball.initial_x
+			ball.y = ball.initial_y
 			meter.strength = 0
 			meter.direction = 'right'
 			meter.enabled = true
 
 		end
 	end
+
+	--! Update animation counter !--
+	while ctr  > scroll.interval do
+		ctr = 0
+	end
+
 end
 
 function love.keyreleased(key)
@@ -192,16 +214,8 @@ function love.draw()
 		-- Player
 	    love.graphics.draw(player.img, player.x, player.y)
 
-	    -- Ball
-		love.graphics.draw(ball.img, ball.x, ball.y)	    
-
-	   -- Kick-O-Meter
-	   love.graphics.setColor(255, 255, 255, 255)
-	   love.graphics.rectangle('fill', 950, 60, 252, 30) -- Frame
-	   love.graphics.setColor(0, 0, 0)
-	   love.graphics.rectangle('fill', 952, 62, 248, 26) -- Background
-	   love.graphics.setColor(118, 255, 97)
-	   love.graphics.rectangle('fill', 952, 62, meter.strength, 26) -- Kick bar
+	   -- Kick-O-meter
+	   meter.draw()
 
 	   -- Success / Failure of Kick
 
@@ -219,9 +233,13 @@ function love.draw()
 
 	   	end
 
+    -- Ball
+	love.graphics.draw(ball.img, ball.x, ball.y)	    
+
     end)
 	love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(frame_img, 0, 0)
+
 
    -- Debug output
    if debug == true then
