@@ -3,6 +3,7 @@ debug = true
 local shine = require 'shine'
 
 local meter = require 'meter'
+local message = require 'message'
 
 function debug_print()
 
@@ -30,7 +31,6 @@ end
 
 function love.load(arg)
 	love.window.setMode( 1280, 720)
-	-- love.window.setFullscreen(true)
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 
 	-- Shaders
@@ -65,7 +65,7 @@ function love.load(arg)
 
 	-- Football Target
 	kick = { x = 0, ready = true, multiplier = 17, beginning = false, in_progress = false, complete = false }
-	goal = { x = -3400, message = nil }
+	goal = { x = -3400 }
 
 	-- Player
 
@@ -168,11 +168,7 @@ function love.update(dt)
 	--! Show result of kick !--
 	if kick.complete then
 		-- Set success / failure message
-		if kick.x <= -3500 then
-			goal.message = 'SUCCESS!'
-		else
-			goal.message = 'FAILURE!'
-		end
+		message.set_kick_text(kick.x, goal.x)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
@@ -220,16 +216,7 @@ function love.draw()
 	   -- Success / Failure of Kick
 
 		if kick.complete then
-
-			love.graphics.setColor(38, 86, 95, 255)
-	   		love.graphics.rectangle('fill', 320, 270, 660, 210) -- Frame
-
-		    love.graphics.setColor(0, 0, 0)
-	   		love.graphics.rectangle('fill', 352, 302, 596, 146) -- Background
-
-			love.graphics.setFont(msg_font)
-	   		love.graphics.setColor(255, 255, 255, 255)
-		    love.graphics.print(goal.message, 530, 350) -- Message
+			message.kick.draw(msg_font)
 
 	   	end
 
