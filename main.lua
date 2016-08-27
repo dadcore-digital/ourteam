@@ -5,6 +5,7 @@ local meter 		= require 'meter'
 local message 		= require 'message'
 local kick 			= require 'kick'
 local ball 			= require 'ball'
+local bg 			= require 'background'
 
 function debug_print()
 
@@ -37,17 +38,8 @@ function love.load(arg)
 
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 
-
-	-- Background Scrolling
-	bg = { initial_x = -300, y = -24 }
-	bg.x = bg.initial_x
-
-	-- Set non-cheering crowd as default as well as animation frame
-	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
-
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	scroll = { interval = 0.1, x_step = 64}
-
 
 	-- Monitor Frame
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
@@ -114,8 +106,10 @@ function love.update(dt)
 
 		-- Chunky scrolling to only scroll every x/fractions of a second
 		-- Also specifies how many x coords to step forward each scroll
-		if ctr > scroll.interval then
-		  bg.x = bg.x - scroll.x_step
+		
+		bg.move(ctr, scroll.interval, scroll.x_step)
+
+		if ctr > scroll.interval then		  
 		  player.x = player.x - scroll.x_step
 		end
 
@@ -179,7 +173,7 @@ function love.draw()
 	post_effect:draw(function()
 
 		-- Background 
-		love.graphics.draw(bg.img, bg.x, bg.y)
+		bg.draw()
 
 		-- Player
 	    love.graphics.draw(player.img, player.x, player.y)
