@@ -1,9 +1,10 @@
 io.stdout:setvbuf('no')
 -- debug = true
-local shine = require 'shine'
 
-local meter = require 'meter'
-local message = require 'message'
+local meter 		= require 'meter'
+local message 		= require 'message'
+local kick 			= require 'kick'
+local ball 			= require 'ball'
 
 function debug_print()
 
@@ -26,28 +27,16 @@ function debug_print()
    love.graphics.setColor(255, 255, 255)
    love.graphics.print('ball.x' .. ball.x,  50, 160)
 
-
 end
 
 function love.load(arg)
+
+
 	love.window.setMode( 1280, 720)
+	post_effect = require 'shaders'
+
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 
-	-- Shaders
-	local grain = shine.filmgrain()
-	grain.opacity = 0.1
-
-	local vignette = shine.vignette()
-	vignette.opacity = 0.5
-
-	local scanlines = shine.scanlines()
-	scanlines.opacity = 0.1
-
-	local crt = shine.crt()
-	crt.x = 0.05
-	crt.y = 0.05
-
-	post_effect = grain:chain(vignette):chain(scanlines):chain(crt)
 
 	-- Background Scrolling
 	bg = { initial_x = -300, y = -24 }
@@ -63,8 +52,7 @@ function love.load(arg)
 	-- Monitor Frame
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
-	-- Football Target
-	kick = { x = 0, ready = true, multiplier = 17, beginning = false, in_progress = false, complete = false }
+	-- Football Target	
 	goal = { x = -3400 }
 
 	-- Player
@@ -73,50 +61,36 @@ function love.load(arg)
 	player.x = player.initial_x
 	player.img = love.graphics.newImage('assets/graphics/sprites/player.png')
 
-	-- Ball
-	ball = {
-			initial_x = 700,
-			initial_y = 442,
-			scroll_start_offset_x = 350,
-			apogee_offset_y = 100
-		}
-	ball.x = ball.initial_x
-	ball.y = ball.initial_y
-	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
-
-
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
+
 end
+
 
 function love.update(dt)
 	require('lovebird').update()
 
 	--! Set Animation Counter !--
 	ctr = (ctr or 0) + dt
-	bg_ctr = (bg_ctr or 0) 
 
 	--! Animate ball but don't start scrolling yet !--
-	if kick.beginning and 
-		ball.x <= ball.initial_x + ball.scroll_start_offset_x then
+	if kick.state.beginning and ball.can_move_right() then
+		
+		ball.move(ctr, scroll.interval)
 
-	-- Animate ball
-	if ctr > scroll.interval then
-		ball.x = ball.x + 64
+	elseif kick.state.beginning and not ball.can_move_right() then		
+		kick.state.beginning = false
+		kick.state.in_progress = true
+
 	end
 
-	elseif kick.beginning and 
-		ball.x > ball.initial_x + ball.scroll_start_offset_x then
-		kick.beginning = false
-		kick.in_progress = true
-	end
 
 	--! Animate ball rise and fall !--
 
-	if kick.beginning or kick.in_progress then
+	if kick.state.beginning or kick.state.in_progress then
 
 		-- Decide whether to animate ball y rise
-		animate_ball_rise = ball.y > ball.apogee_offset_y or false
+		animate_ball_rise = ball.y > ball.offset.apogee.y or false
 
 		-- Decide whether to animate ball y fall
 		animate_ball_fall = bg.x <= -3000 or false
@@ -136,7 +110,7 @@ function love.update(dt)
 	end
 
 	--! Auto scroll background until target is reached !--
-	if kick.in_progress then
+	if kick.state.in_progress then
 
 		-- Chunky scrolling to only scroll every x/fractions of a second
 		-- Also specifies how many x coords to step forward each scroll
@@ -147,7 +121,7 @@ function love.update(dt)
 
 		-- Stop moving background when target reached
 		if bg.x <= kick.x then
-			kick.in_progress = false
+			kick.state.in_progress = false
 			kick.complete = true
 		end
 	end
@@ -158,28 +132,28 @@ function love.update(dt)
 	meter.fluctuate()
 
 	--! Stop Power Meter !--
-	if love.keyboard.isDown('space') and kick.ready then
+	if love.keyboard.isDown('space') and kick.state.ready then
 		meter.enabled = false
 		kick.x = ( (meter.strength + 1) * kick.multiplier) * -1
-		kick.ready = false
-		kick.beginning = true
+		kick.state.ready = false
+		kick.state.beginning = true
 	end
 
 	--! Show result of kick !--
 	if kick.complete then
 		-- Set success / failure message
-		message.set_kick_text(kick.x, goal.x)
+		message.kick.set(kick.x, goal.x)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
-			kick.beginning = false
-			kick.in_progress = false
+			kick.state.beginning = false
+			kick.state.in_progress = false
 			kick.complete = false
 			kick.x = 0
 			bg.x = bg.initial_x
 			player.x = player.initial_x
-			ball.x = ball.initial_x
-			ball.y = ball.initial_y
+			ball.x = ball.initial.x
+			ball.y = ball.initial.y
 			meter.strength = 0
 			meter.direction = 'right'
 			meter.enabled = true
@@ -196,7 +170,7 @@ end
 
 function love.keyreleased(key)
    if key == "space" then
-      kick.ready = true
+      kick.state.ready = true
    end
 end
 
@@ -220,8 +194,8 @@ function love.draw()
 
 	   	end
 
-    -- Ball
-	love.graphics.draw(ball.img, ball.x, ball.y)	    
+	    -- Ball
+		ball.draw()
 
     end)
 	love.graphics.setColor(255, 255, 255, 255)
