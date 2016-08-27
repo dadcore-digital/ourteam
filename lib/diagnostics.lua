@@ -18,7 +18,7 @@ local diagnostics = {}
 			love.graphics.print('meter strength: ' .. meter.strength,  50, 80)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('kick: ' .. kick.x,  50, 100)
+			love.graphics.print('kick: ' .. kick.target.x,  50, 100)
 
 			love.graphics.setColor(255, 255, 255)
 			love.graphics.print('player.x' .. player.x,  50, 130)

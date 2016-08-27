@@ -1,8 +1,8 @@
 local kick = {}
 	
 	kick.state = {}
-
-	kick.x 						= 0 
+	kick.target = {}
+	kick.target.x 				= 0 
 	kick.multiplier 			= 17
 	
 	kick.state.ready 			= true
@@ -12,17 +12,31 @@ local kick = {}
 				
 
 	function kick.start()
-		kick.x = ( (meter.strength + 1) * kick.multiplier) * -1
+		kick.target.x = ( (meter.strength + 1) * kick.multiplier) * -1
 		kick.state.ready = false
 		kick.state.beginning = true
 	end
+
+	function kick.target.reached()
+
+		-- Calculate if target has been reached by comparing
+		-- background x position vs target x position.
+
+		if bg.x <= kick.target.x then
+			return true
+		end
+
+		return false
+
+	end
+
 
 	function kick.reset()
 
 		kick.state.beginning = false
 		kick.state.in_progress = false
 		kick.state.complete = false
-		kick.x = 0
+		kick.target.x = 0
 
 	end
 

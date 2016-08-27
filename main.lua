@@ -33,15 +33,27 @@ end
 
 function love.update(dt)
 	
+	-- Utilities & Helpers
 	if debug then require('vendor/lovebird').update() end
 
 	-- Set Animation Counter
 	ctr = (ctr or 0) + dt
 
+
+	--! Power Meter Start / Stop !--
 	-- Get that meter moving
 	meter.fluctuate() 
 
-	--! Move ball !--
+	-- Stop meter and start kick --
+	if love.keyboard.isDown('space') and kick.state.ready then
+		
+		meter.enabled = false
+		kick.start()		
+
+	end	
+
+
+	--! Move Ball !--
 	-- This will move ball as far right on screen as it can go,
 	-- before whole screen starts scrolling.
 	
@@ -59,8 +71,25 @@ function love.update(dt)
 	end
 
 
-	--! Animate ball rise and fall !--
+	--! Scroll background until target is reached !--
+	if kick.state.in_progress then
 
+		-- Scroll background and player
+		bg.scroll(ctr, scroll.interval, scroll.x_step)
+		player.scroll(ctr, scroll.interval, scroll.x_step)
+
+		-- Stop moving background when target reached
+		if kick.target.reached() then
+			
+			kick.state.in_progress = false
+			kick.state.complete = true
+		
+		end
+	
+	end	
+
+
+	--! Animate ball rise and fall !--
 	if kick.state.beginning or kick.state.in_progress then
 
 		-- Decide whether to animate ball y rise
@@ -83,34 +112,12 @@ function love.update(dt)
 
 	end
 
-	--! Scroll background until target is reached !--
-
-	if kick.state.in_progress then
-
-		-- Scroll background and player
-		bg.scroll(ctr, scroll.interval, scroll.x_step)
-		player.scroll(ctr, scroll.interval, scroll.x_step)
-
-		-- Stop moving background when target reached
-		if bg.x <= kick.x then
-			kick.state.in_progress = false
-			kick.state.complete = true
-		end
-	end
-
-
-
-	--! Stop Power Meter and start Kck !--
-	if love.keyboard.isDown('space') and kick.state.ready then
-		meter.enabled = false
-		kick.start()		
-	end
 
 	--! Show result of kick !--
 	if kick.state.complete then
 		
 		-- Set success / failure message
-		message.kick.set(kick.x, goal.x)
+		message.kick.set(kick.target.x, goal.x)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
