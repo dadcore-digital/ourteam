@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = true
+-- debug = true
 local shine = require 'shine'
 
 local meter = require 'meter'

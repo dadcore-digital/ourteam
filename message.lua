@@ -1,7 +1,7 @@
 local message = {}
 message.kick = {}
 
-function message.set_kick_text(kick_x, goal_x)
+function message.kick.set(kick_x, goal_x)
 	
 	if kick_x <= goal_x then
 		message.kick.text = 'SUCCESS!'
