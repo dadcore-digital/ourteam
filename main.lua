@@ -11,21 +11,22 @@ diagnostics 	= require 'lib/diagnostics'
 
 function love.load(arg)
 
+	-- Window Settings
 	love.window.setMode( 1280, 720)
+
+	-- Shaders
 	post_effect = require 'lib/shaders'
 
-	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
+	-- Fonts
+	msg_font = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 
+	-- Background & Frame Elements
 	love.graphics.setBackgroundColor( 0, 0, 0 )
-	scroll = { interval = 0.1, x_step = 64}
-
-	-- Monitor Frame
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
-	-- Football Target	
+	-- Constants
 	goal = { x = -3400 }
-
-	love.graphics.setDefaultFilter("nearest", "nearest")
+	scroll = { interval = 0.1, x_step = 64}
 
 end
 
@@ -152,11 +153,13 @@ function love.draw()
 
     end) -- end post processing
 
+	-- Monitor Frame
+    love.graphics.draw(frame_img, 0, 0)
 
    	-- Reset color
 	love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(frame_img, 0, 0)
 
+	-- Diagnostic Panel
     diagnostics.draw(debug, diag_data)
 
 end
