@@ -20,6 +20,14 @@ local player = {}
 
 	end
 
+
+	function player.reset()
+
+		player.x = player.initial.x
+	
+	end
+
+
 	function player.draw()
 
 		love.graphics.draw(player.img, player.x, player.y)

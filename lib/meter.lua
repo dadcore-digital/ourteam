@@ -35,6 +35,13 @@ local meter = {}
 	
 	end
 
+	function meter.reset()
+		
+		meter.strength = 0
+		meter.direction = 'right'
+		meter.enabled = true
+	
+	end
 
 	function meter.draw()
 

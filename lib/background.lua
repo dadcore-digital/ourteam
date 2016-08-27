@@ -20,6 +20,9 @@ local bg = {}
 
 	end
 
+	function bg.reset()
+		bg.x = bg.initial.x
+	end	
 
 	function bg.draw()
 

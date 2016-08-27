@@ -45,6 +45,14 @@ local ball = {}
 	
 	end
 
+	function ball.reset()
+
+		ball.x = ball.initial.x
+		ball.y = ball.initial.y
+
+	end
+
+
 	function ball.draw()
 		love.graphics.draw(ball.img, ball.x, ball.y)
 	end

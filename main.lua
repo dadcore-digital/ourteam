@@ -35,15 +35,18 @@ function love.update(dt)
 	
 	if debug then require('vendor/lovebird').update() end
 
-	--! Set Animation Counter !--
+	-- Set Animation Counter
 	ctr = (ctr or 0) + dt
 
-	--! Animate ball but don't start scrolling yet !--
-	if kick.state.beginning and ball.can_move_right() then
+	-- Get that meter moving
+	meter.fluctuate() 
+
+	if kick.state.beginning and ball.can_move_right() then	
 		
 		ball.move(ctr, scroll.interval)
 
 	elseif kick.state.beginning and not ball.can_move_right() then		
+
 		kick.state.beginning = false
 		kick.state.in_progress = true
 
@@ -88,40 +91,33 @@ function love.update(dt)
 	end
 
 
-	--! Flucuate Power Meter!--
-	meter.fluctuate()
 
-	--! Stop Power Meter !--
+	--! Stop Power Meter and start Kck !--
 	if love.keyboard.isDown('space') and kick.state.ready then
 		meter.enabled = false
-		kick.x = ( (meter.strength + 1) * kick.multiplier) * -1
-		kick.state.ready = false
-		kick.state.beginning = true
+		kick.start()		
 	end
 
 	--! Show result of kick !--
 	if kick.complete then
+		
 		-- Set success / failure message
 		message.kick.set(kick.x, goal.x)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
-			kick.state.beginning = false
-			kick.state.in_progress = false
-			kick.complete = false
-			kick.x = 0
-			bg.x = bg.initial.x
-			player.x = player.initial.x
-			ball.x = ball.initial.x
-			ball.y = ball.initial.y
-			meter.strength = 0
-			meter.direction = 'right'
-			meter.enabled = true
+
+			bg.reset()
+			player.reset()
+			ball.reset()
+			kick.reset()
+			meter.reset()
 
 		end
+
 	end
 
-	--! Update animation counter !--
+	--! Reset animation counter if interval hit !--
 	while ctr  > scroll.interval do
 		ctr = 0
 	end
