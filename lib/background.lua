@@ -9,7 +9,7 @@ local bg = {}
 	bg.y = 0
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 	
-	function bg.move(ctr, interval, x_step)
+	function bg.scroll(ctr, interval, x_step)
 
 		-- Move the background forward, given a counter and an interval used to
 		-- only draw animations every x number of cycles.

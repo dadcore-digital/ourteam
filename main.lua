@@ -1,11 +1,12 @@
 io.stdout:setvbuf('no')
 debug = true
 
+bg 				= require 'lib/background'
+player 			= require 'lib/player'
+ball 			= require 'lib/ball'
+kick 			= require 'lib/kick'
 meter 			= require 'lib/meter'
 message 		= require 'lib/message'
-kick 			= require 'lib/kick'
-ball 			= require 'lib/ball'
-bg 				= require 'lib/background'
 diagnostics 	= require 'lib/diagnostics'
 
 function love.load(arg)
@@ -23,12 +24,6 @@ function love.load(arg)
 
 	-- Football Target	
 	goal = { x = -3400 }
-
-	-- Player
-
-	player = { initial_x = 500, y = 400 }
-	player.x = player.initial_x
-	player.img = love.graphics.newImage('assets/graphics/sprites/player.png')
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -81,14 +76,8 @@ function love.update(dt)
 	--! Auto scroll background until target is reached !--
 	if kick.state.in_progress then
 
-		-- Chunky scrolling to only scroll every x/fractions of a second
-		-- Also specifies how many x coords to step forward each scroll
-		
-		bg.move(ctr, scroll.interval, scroll.x_step)
-
-		if ctr > scroll.interval then		  
-		  player.x = player.x - scroll.x_step
-		end
+		bg.scroll(ctr, scroll.interval, scroll.x_step)
+		player.scroll(ctr, scroll.interval, scroll.x_step)
 
 		-- Stop moving background when target reached
 		if bg.x <= kick.x then
@@ -121,7 +110,7 @@ function love.update(dt)
 			kick.complete = false
 			kick.x = 0
 			bg.x = bg.initial.x
-			player.x = player.initial_x
+			player.x = player.initial.x
 			ball.x = ball.initial.x
 			ball.y = ball.initial.y
 			meter.strength = 0
@@ -151,15 +140,13 @@ function love.draw()
 	post_effect:draw(function()
 
 		bg.draw()
+		player.draw()
 		meter.draw()
 		ball.draw()
 
-		-- Player
-	    love.graphics.draw(player.img, player.x, player.y)
-
 	   -- Success / Failure of Kick
 		if kick.complete then			
-			message.kick.draw(msg_font)	   	
+			message.kick.draw(msg_font)
 	   	end
 
 
