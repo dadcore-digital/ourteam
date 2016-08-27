@@ -41,12 +41,18 @@ function love.update(dt)
 	-- Get that meter moving
 	meter.fluctuate() 
 
+	--! Move ball !--
+	-- This will move ball as far right on screen as it can go,
+	-- before whole screen starts scrolling.
+	
 	if kick.state.beginning and ball.can_move_right() then	
 		
+		-- Move Ball
 		ball.move(ctr, scroll.interval)
 
 	elseif kick.state.beginning and not ball.can_move_right() then		
 
+		-- Ball has moved as far right it can go
 		kick.state.beginning = false
 		kick.state.in_progress = true
 
@@ -77,16 +83,18 @@ function love.update(dt)
 
 	end
 
-	--! Auto scroll background until target is reached !--
+	--! Scroll background until target is reached !--
+
 	if kick.state.in_progress then
 
+		-- Scroll background and player
 		bg.scroll(ctr, scroll.interval, scroll.x_step)
 		player.scroll(ctr, scroll.interval, scroll.x_step)
 
 		-- Stop moving background when target reached
 		if bg.x <= kick.x then
 			kick.state.in_progress = false
-			kick.complete = true
+			kick.state.complete = true
 		end
 	end
 
@@ -99,7 +107,7 @@ function love.update(dt)
 	end
 
 	--! Show result of kick !--
-	if kick.complete then
+	if kick.state.complete then
 		
 		-- Set success / failure message
 		message.kick.set(kick.x, goal.x)
@@ -140,12 +148,7 @@ function love.draw()
 		player.draw()
 		meter.draw()
 		ball.draw()
-
-	   -- Success / Failure of Kick
-		if kick.complete then			
-			message.kick.draw(msg_font)
-	   	end
-
+		message.kick.draw(msg_font, kick)
 
     end) -- end post processing
 

@@ -21,7 +21,7 @@ local kick = {}
 
 		kick.state.beginning = false
 		kick.state.in_progress = false
-		kick.complete = false
+		kick.state.complete = false
 		kick.x = 0
 
 	end
