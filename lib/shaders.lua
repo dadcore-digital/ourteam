@@ -1,4 +1,4 @@
-local shine = require 'shine'
+local shine = require '../vendor/shine'
 
 -- Shaders
 local grain = shine.filmgrain()

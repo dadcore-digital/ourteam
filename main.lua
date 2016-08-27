@@ -1,18 +1,17 @@
 io.stdout:setvbuf('no')
--- debug = true
+debug = true
 
-meter 			= require 'meter'
-message 		= require 'message'
-kick 			= require 'kick'
-ball 			= require 'ball'
-bg 				= require 'background'
-diagnostics 	= require 'diagnostics'
+meter 			= require 'lib/meter'
+message 		= require 'lib/message'
+kick 			= require 'lib/kick'
+ball 			= require 'lib/ball'
+bg 				= require 'lib/background'
+diagnostics 	= require 'lib/diagnostics'
 
 function love.load(arg)
 
-
 	love.window.setMode( 1280, 720)
-	post_effect = require 'shaders'
+	post_effect = require 'lib/shaders'
 
 	msg_font   = love.graphics.newFont("assets/fonts/joystix.ttf", 40)
 
@@ -33,13 +32,12 @@ function love.load(arg)
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
-
 end
 
 
 function love.update(dt)
 	
-	if debug then require('lovebird').update() end
+	if debug then require('vendor/lovebird').update() end
 
 	--! Set Animation Counter !--
 	ctr = (ctr or 0) + dt
@@ -100,7 +98,6 @@ function love.update(dt)
 	end
 
 
-
 	--! Flucuate Power Meter!--
 	meter.fluctuate()
 
@@ -141,11 +138,13 @@ function love.update(dt)
 
 end
 
+
 function love.keyreleased(key)
    if key == "space" then
       kick.state.ready = true
    end
 end
+
 
 function love.draw()
 
