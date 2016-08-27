@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = false
+-- debug = true
 
 meter 			= require 'meter'
 message 		= require 'message'
@@ -150,35 +150,28 @@ function love.draw()
 
 	post_effect:draw(function()
 
-		-- Background 
 		bg.draw()
+		meter.draw()
+		ball.draw()
 
 		-- Player
 	    love.graphics.draw(player.img, player.x, player.y)
 
-	   -- Kick-O-meter
-	   meter.draw()
-
 	   -- Success / Failure of Kick
-
-		if kick.complete then
-			message.kick.draw(msg_font)
-
+		if kick.complete then			
+			message.kick.draw(msg_font)	   	
 	   	end
 
-	    -- Ball
-		ball.draw()
 
-    end)
-
-    diagnostics.draw(debug, diag_data)
-
-	love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(frame_img, 0, 0)
-
+    end) -- end post processing
 
 
    	-- Reset color
+	love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.draw(frame_img, 0, 0)
+
+    diagnostics.draw(debug, diag_data)
+
 end
 
 
