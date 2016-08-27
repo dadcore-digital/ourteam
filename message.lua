@@ -1,7 +1,7 @@
 local message = {}
 
 	message.kick = {}
-
+	
 
 	function message.kick.set(kick_x, goal_x)
 		

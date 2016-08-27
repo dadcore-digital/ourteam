@@ -1,34 +1,12 @@
 io.stdout:setvbuf('no')
--- debug = true
+debug = false
 
-local meter 		= require 'meter'
-local message 		= require 'message'
-local kick 			= require 'kick'
-local ball 			= require 'ball'
-local bg 			= require 'background'
-
-function debug_print()
-
-   love.graphics.setNewFont(12)
-   love.graphics.setColor(0, 0, 0)
-   love.graphics.rectangle('fill', 25, 35, 180, 160)
-
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.print('bg.x: ' .. bg.x,  50, 50)
-
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.print('meter strength: ' .. meter.strength,  50, 80)
-
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.print('kick: ' .. kick.x,  50, 100)
-
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.print('player.x' .. player.x,  50, 130)
-
-   love.graphics.setColor(255, 255, 255)
-   love.graphics.print('ball.x' .. ball.x,  50, 160)
-
-end
+meter 			= require 'meter'
+message 		= require 'message'
+kick 			= require 'kick'
+ball 			= require 'ball'
+bg 				= require 'background'
+diagnostics 	= require 'diagnostics'
 
 function love.load(arg)
 
@@ -192,14 +170,13 @@ function love.draw()
 		ball.draw()
 
     end)
+
+    diagnostics.draw(debug, diag_data)
+
 	love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(frame_img, 0, 0)
 
 
-   -- Debug output
-   if debug == true then
-   		debug_print()
-   	end
 
    	-- Reset color
 end
