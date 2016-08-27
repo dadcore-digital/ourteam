@@ -23,7 +23,7 @@ local bg = {}
 
 	function bg.draw()
 
-		love.graphics.draw(bg.img, bg.x, bg.y)
+		love.graphics.draw(bg.img, bg.x, 0)
 
 	end
 

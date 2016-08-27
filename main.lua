@@ -38,7 +38,8 @@ end
 
 
 function love.update(dt)
-	require('lovebird').update()
+	
+	if debug then require('lovebird').update() end
 
 	--! Set Animation Counter !--
 	ctr = (ctr or 0) + dt
@@ -122,7 +123,7 @@ function love.update(dt)
 			kick.state.in_progress = false
 			kick.complete = false
 			kick.x = 0
-			bg.x = bg.initial_x
+			bg.x = bg.initial.x
 			player.x = player.initial_x
 			ball.x = ball.initial.x
 			ball.y = ball.initial.y
