@@ -5,17 +5,29 @@ local kick = {}
 	kick.target.x 				= 0 
 	kick.multiplier 			= 17
 	
+	-- These four states control the flow of the game:
+	
+	-- 1. Ready for kick off
 	kick.state.ready 			= true
+
+	-- 2. The kick is beginning but hasn't gone past bounds of screen
 	kick.state.beginning 		= false
+	
+	-- 3. Kick has surpassed the bounds of the original screen
 	kick.state.in_progress 		= false
+
+	-- 4. Kick has reached its final destination
 	kick.state.complete 		= false	
 				
 
 	function kick.start()
+		
 		kick.target.x = ( (meter.strength + 1) * kick.multiplier) * -1
 		kick.state.ready = false
 		kick.state.beginning = true
+
 	end
+
 
 	function kick.target.reached()
 
