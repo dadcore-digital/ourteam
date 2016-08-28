@@ -15,16 +15,16 @@ local diagnostics = {}
 			love.graphics.print('bg.x: ' .. bg.x,  50, 50)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('kick success: ' ..tostring(kick.success),  50, 80)
+			love.graphics.print('kick state complete: ' ..tostring(kick.state.complete),  50, 80)
 
 			love.graphics.setColor(255, 255, 255)
 			love.graphics.print('kick.target.x: ' .. kick.target.x,  50, 100)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('goal.x' .. goal.x,  50, 130)
+			love.graphics.print('kick state in progress: ' .. tostring(kick.state.in_progress),  50, 130)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('ball.x' .. ball.x,  50, 160)
+			love.graphics.print('player run done' .. tostring(player.run.done),  50, 160)
 		
 		end
 

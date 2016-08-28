@@ -52,13 +52,26 @@ function love.update(dt)
 	-- Get that meter moving
 	meter.fluctuate()
 
-	-- Stop meter and start kick --
+	-- Stop meter and start player running to kick --
 	if love.keyboard.isDown('space') and kick.state.ready then
 		
 		meter.enabled = false
-		kick.start()		
+		player.start()
 
-	end	
+	end
+
+	--! Kick off Phase !--
+
+	-- Player is running towards the ball --
+	if player.run.in_progress and not player.can_kick() then
+		player.move(ctr, scroll.interval)
+	end
+
+	-- Player has reached the ball and is kicking --
+	if player.run.done then
+		kick.start()
+		player.ready()
+	end
 
 	--! Move ball once kick starts !--
 	-- This will move ball as far right on screen as it can go,
