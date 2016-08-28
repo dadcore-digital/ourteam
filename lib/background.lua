@@ -8,7 +8,7 @@ local bg = {}
 	bg.initial.y = -24 
 	
 	bg.x = bg.initial.x
-	bg.y = 0
+	bg.y = bg.initial.y
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 
 	bg.animation = {}
@@ -18,14 +18,21 @@ local bg = {}
 
 
 	function bg.animation.load()
- 		bg.animation.obj  = k.new("/assets/graphics/backgrounds/football_field_sheet.png", 5760, 720, 2, 0.5, 'rough')
+
+		-- Cue up crowd animation at program start
+		-- Should be executed inside of love.load()
+
+ 		bg.animation.player  = k.new("/assets/graphics/backgrounds/football_field_sheet.png", 5760, 720, 2, 0.5, 'rough')
+
 	end
 
 	function bg.animation.update(dt, kick)
-		bg.animation.obj:update(dt)
+
+
 
 		if kick.state.complete and kick.success then
 			bg.animation.start()
+			bg.animation.player:update(dt)
 		else
 			bg.animation.stop()
 		end
@@ -62,11 +69,11 @@ local bg = {}
 
 		if bg.animation.state == 'stopped' then
 
-			love.graphics.draw(bg.img, bg.x, 0)
+			love.graphics.draw(bg.img, bg.x, bg.y)
 		
 		elseif bg.animation.state == 'playing' then
 
-			bg.animation.obj:draw (bg.x,  bg.y, 0, 1, 1)
+			bg.animation.player:draw (bg.x,  bg.y, 0, 1, 1)
 
 		end
 
