@@ -1,6 +1,8 @@
 io.stdout:setvbuf('no')
 debug = true
 
+local k = require "vendor/katsudo"
+
 bg 				= require 'lib/background'
 player 			= require 'lib/player'
 ball 			= require 'lib/ball'
@@ -28,6 +30,10 @@ function love.load(arg)
 	goal = { x = -3400 }
 	scroll = { interval = 0.1, x_step = 64}
 
+	-- Animations
+	bg.animation.load()
+
+
 end
 
 
@@ -39,10 +45,12 @@ function love.update(dt)
 	-- Set Animation Counter
 	ctr = (ctr or 0) + dt
 
+	-- Update Animations
+	bg.animation.update(dt, kick)
 
-	--! Power Meter Start / Stop !--
+	--! Power meter start /stop !--
 	-- Get that meter moving
-	meter.fluctuate() 
+	meter.fluctuate()
 
 	-- Stop meter and start kick --
 	if love.keyboard.isDown('space') and kick.state.ready then
@@ -52,8 +60,7 @@ function love.update(dt)
 
 	end	
 
-
-	--! Move Ball !--
+	--! Move ball once kick starts !--
 	-- This will move ball as far right on screen as it can go,
 	-- before whole screen starts scrolling.
 	
@@ -62,7 +69,7 @@ function love.update(dt)
 		-- Move Ball
 		ball.move(ctr, scroll.interval)
 
-	elseif kick.state.beginning and not ball.can_move_right() then		
+	elseif kick.state.beginning and not ball.can_move_right() then
 
 		-- Ball has moved as far right it can go
 		kick.state.beginning = false
@@ -83,7 +90,7 @@ function love.update(dt)
 			
 			kick.state.in_progress = false
 			kick.state.complete = true
-		
+
 		end
 	
 	end	
@@ -116,8 +123,10 @@ function love.update(dt)
 	--! Show result of kick !--
 	if kick.state.complete then
 		
-		-- Set success / failure message
-		message.kick.set(kick.target.x, goal.x)
+		-- Set kick success / failure and show message
+
+		kick.set_success_fail(goal.x)
+		message.kick.set(kick.success)
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then

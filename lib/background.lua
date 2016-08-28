@@ -1,3 +1,5 @@
+local k = require "vendor/katsudo"
+
 local bg = {}
 	
 	bg.initial = {}
@@ -8,7 +10,37 @@ local bg = {}
 	bg.x = bg.initial.x
 	bg.y = 0
 	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
-	
+
+	bg.animation = {}
+	bg.animation.state = {}
+
+	bg.animation.state = 'stopped'
+
+
+	function bg.animation.load()
+ 		bg.animation.obj  = k.new("/assets/graphics/backgrounds/football_field_sheet.png", 5760, 720, 2, 0.5, 'rough')
+	end
+
+	function bg.animation.update(dt, kick)
+		bg.animation.obj:update(dt)
+
+		if kick.state.complete and kick.success then
+			bg.animation.start()
+		else
+			bg.animation.stop()
+		end
+
+	end
+
+	function bg.animation.start()
+		bg.animation.state = 'playing'
+	end
+
+	function bg.animation.stop()
+		bg.animation.state = 'stopped'
+	end
+
+
 	function bg.scroll(ctr, interval, x_step)
 
 		-- Move the background forward, given a counter and an interval used to
@@ -20,14 +52,31 @@ local bg = {}
 
 	end
 
+
 	function bg.reset()
 		bg.x = bg.initial.x
 	end	
 
 	function bg.draw()
 
-		love.graphics.draw(bg.img, bg.x, 0)
+
+		if bg.animation.state == 'stopped' then
+
+			love.graphics.draw(bg.img, bg.x, 0)
+		
+		elseif bg.animation.state == 'playing' then
+
+			bg.animation.obj:draw (bg.x,  bg.y, 0, 1, 1)
+
+		end
+
 
 	end
 
 return bg
+
+
+
+
+
+

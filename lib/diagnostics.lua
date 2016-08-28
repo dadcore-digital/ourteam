@@ -15,13 +15,13 @@ local diagnostics = {}
 			love.graphics.print('bg.x: ' .. bg.x,  50, 50)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('meter strength: ' .. meter.strength,  50, 80)
+			love.graphics.print('kick success: ' ..tostring(kick.success),  50, 80)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('kick: ' .. kick.target.x,  50, 100)
+			love.graphics.print('kick.target.x: ' .. kick.target.x,  50, 100)
 
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('player.x' .. player.x,  50, 130)
+			love.graphics.print('goal.x' .. goal.x,  50, 130)
 
 			love.graphics.setColor(255, 255, 255)
 			love.graphics.print('ball.x' .. ball.x,  50, 160)

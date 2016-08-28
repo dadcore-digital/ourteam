@@ -3,9 +3,9 @@ local message = {}
 	message.kick = {}
 	
 
-	function message.kick.set(kick_x, goal_x)
+	function message.kick.set(success)
 		
-		if kick_x <= goal_x then
+		if success then
 			message.kick.text = 'SUCCESS!'
 		else
 			message.kick.text = 'FAILURE!'

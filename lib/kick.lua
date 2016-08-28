@@ -4,7 +4,8 @@ local kick = {}
 	kick.target = {}
 	kick.target.x 				= 0 
 	kick.multiplier 			= 17
-	
+	kick.success 				= false
+
 	-- These four states control the flow of the game:
 	
 	-- 1. Ready for kick off
@@ -42,6 +43,16 @@ local kick = {}
 
 	end
 
+	function kick.set_success_fail(goal_x)
+		
+		if kick.target.x <= goal_x then
+			kick.success = true
+		else
+			kick.success = false
+		end
+
+	end
+
 
 	function kick.reset()
 
@@ -49,6 +60,7 @@ local kick = {}
 		kick.state.in_progress = false
 		kick.state.complete = false
 		kick.target.x = 0
+		kick.success = false
 
 	end
 
