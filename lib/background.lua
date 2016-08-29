@@ -2,17 +2,17 @@ local k = require "vendor/katsudo"
 
 local bg = {}
 	
-	bg.initial = {}
+	bg.initial 				= {}
 
-	bg.initial.x = -300
-	bg.initial.y = -24 
+	bg.initial.x 			= -300
+	bg.initial.y 			= -24 
 	
-	bg.x = bg.initial.x
-	bg.y = bg.initial.y
-	bg.img = love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
+	bg.x 					= bg.initial.x
+	bg.y 					= bg.initial.y
+	bg.img 					= love.graphics.newImage('assets/graphics/backgrounds/football_field_bg.png')
 
-	bg.animation = {}
-	bg.animation.state = {}
+	bg.animation 			= {}
+	bg.animation.state 		= {}
 
 	bg.animation.state = 'stopped'
 
@@ -22,7 +22,7 @@ local bg = {}
 		-- Cue up crowd animation at program start
 		-- Should be executed inside of love.load()
 
- 		bg.animation.player  = k.new("/assets/graphics/backgrounds/football_field_sheet.png", 5760, 720, 2, 0.5, 'rough')
+ 		bg.animation.player  = k.new("/assets/graphics/backgrounds/football_field_sheet.png", 5760, 720, 2, 1, 'rough')
 
 	end
 

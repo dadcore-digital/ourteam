@@ -32,7 +32,7 @@ function love.load(arg)
 
 	-- Animations
 	bg.animation.load()
-
+	player.animation.load()
 
 end
 
@@ -47,6 +47,7 @@ function love.update(dt)
 
 	-- Update Animations
 	bg.animation.update(dt, kick)
+	player.animation.update(dt)
 
 	--! Power meter start /stop !--
 	-- Get that meter moving
@@ -64,6 +65,7 @@ function love.update(dt)
 
 	-- Player is running towards the ball --
 	if player.run.in_progress and not player.can_kick() then
+		player.animation.update(dt)
 		player.move(ctr, scroll.interval)
 	end
 

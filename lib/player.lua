@@ -1,9 +1,11 @@
+local k = require "vendor/katsudo"
+
 local player = {}
 	
 	player.initial 			= {}
 	
-	player.initial.x 		= 500
-	player.initial.y 		= 400 
+	player.initial.x 		= 350
+	player.initial.y 		= 393 
 	
 	player.x 				= player.initial.x
 	player.y 				= player.initial.y
@@ -13,11 +15,34 @@ local player = {}
 	player.run.ready 		= true
 	player.run.in_progress 	= false
 	player.run.done			= false
-	player.run.length 		= 180
+	player.run.length 		= 345
 
 
 	player.step 			= {}
-	player.step.x 			= 24
+	player.step.x 			= 3
+
+	player.animation 		= {}
+	player.animation.state  = 'stopped'
+
+	function player.animation.load()
+
+ 		player.animation.player  = k.new("/assets/graphics/sprites/player_sheet.png", 26, 68, 2, .3, 'rough')
+
+	end
+
+	function player.animation.update(dt)
+
+		player.animation.player:update(dt)
+
+	end
+
+	function player.animation.start()
+		player.animation.state = 'playing'
+	end
+
+	function player.animation.stop()
+		player.animation.state = 'stopped'
+	end
 
 
 	function player.scroll(ctr, interval, x_step)
@@ -37,6 +62,7 @@ local player = {}
 
 		player.run.ready 		= false
 		player.run.in_progress 	= true
+		player.animation.state 	= 'playing'
 
 	end
 
@@ -46,6 +72,7 @@ local player = {}
 		
 		player.run.in_progress 	= false
 		player.run.done 		= true
+		player.animation.state = 'stopped'
 
 	end
 
@@ -71,14 +98,12 @@ local player = {}
 	end
 
 
-	function player.move(ctr, interval)
+	function player.move()
 		
 		-- Move the player forward, given a counter and an interval used to
 		-- only draw animations every x number of cycles.
 		
-			if ctr > interval then
-				player.x = player.x + player.step.x
-			end
+			player.x = player.x + player.step.x
 	
 	end
 
@@ -96,7 +121,17 @@ local player = {}
 
 	function player.draw()
 
-		love.graphics.draw(player.img, player.x, player.y)
+
+		if player.animation.state == 'stopped' then
+
+			love.graphics.draw(player.img, player.x, player.y)
+		
+		elseif player.animation.state == 'playing' then
+
+			player.animation.player:draw (player.x,  player.y, 0, 1, 1)
+
+		end
+
 
 	end
 
