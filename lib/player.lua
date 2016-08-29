@@ -18,8 +18,7 @@ local player = {}
 	player.run.length 		= 345
 
 
-	player.step 			= {}
-	player.step.x 			= 3
+	player.speed			= 300
 
 	player.animation 		= {}
 	player.animation.state  = 'stopped'
@@ -51,7 +50,7 @@ local player = {}
 		-- only draw animations every x number of cycles.
 
 		if ctr > scroll.interval then		  
-		  player.x = player.x - scroll.x_step
+		  player.x = player.x - x_step
 		end
 
 	end
@@ -98,12 +97,12 @@ local player = {}
 	end
 
 
-	function player.move()
+	function player.move(dt)
 		
 		-- Move the player forward, given a counter and an interval used to
 		-- only draw animations every x number of cycles.
 		
-			player.x = player.x + player.step.x
+			player.x = player.x + (player.speed * dt)
 	
 	end
 

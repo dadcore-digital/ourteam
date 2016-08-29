@@ -66,7 +66,7 @@ function love.update(dt)
 	-- Player is running towards the ball --
 	if player.run.in_progress and not player.can_kick() then
 		player.animation.update(dt)
-		player.move(ctr, scroll.interval)
+		player.move(dt)
 	end
 
 	-- Player has reached the ball and is kicking --
