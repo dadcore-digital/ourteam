@@ -33,15 +33,24 @@ local ball = {}
 	
 	end
 
+	function ball.plot_curve(x1, y1, x3, y3)
+
+		-- curve = love.math.newBezierCurve( x1, y1, x2, y2, x3, y3 )
+
+	end
 	
 	function ball.move(ctr, interval)
 		
 		-- Move the ball forward, given a counter and an interval used to
 		-- only draw animations every x number of cycles.
 
-		if ctr > interval then
-			ball.x = ball.x + ball.step.x
-		end
+
+		curve  = love.math.newBezierCurve( 100, 100, 200, 0, 300, 100)
+		ball.coords = curve:render(5)
+
+		-- if ctr > interval then
+		-- 	ball.x = ball.x + ball.step.x
+		-- end
 	
 	end
 
@@ -55,6 +64,12 @@ local ball = {}
 
 	function ball.draw()
 		love.graphics.draw(ball.img, ball.x, ball.y)
+		
+		if ball.coords then
+			for i = 1, #ball.coords, 2 do
+				love.graphics.draw(ball.img, ball.coords[i], ball.coords[i+1])
+			end
+		end
 	end
 
 return ball

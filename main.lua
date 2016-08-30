@@ -34,11 +34,14 @@ function love.load(arg)
 	bg.animation.load()
 	player.animation.load()
 
+	if arg[#arg] == "-debug" then require("mobdebug").start() end
+
 end
 
 
 function love.update(dt)
 	
+
 	-- Utilities & Helpers
 	if debug then require('vendor/lovebird').update() end
 
@@ -109,30 +112,6 @@ function love.update(dt)
 		end
 	
 	end	
-
-
-	--! Animate ball rise and fall !--
-	if kick.state.beginning or kick.state.in_progress then
-
-		-- Decide whether to animate ball y rise
-		animate_ball_rise = ball.y > ball.offset.apogee.y or false
-
-		-- Decide whether to animate ball y fall
-		animate_ball_fall = bg.x <= -3000 or false
-
-
-		if ctr > scroll.interval then
-	
-			if animate_ball_rise then
-				ball.y = ball.y - 20
-			end
-
-			if animate_ball_fall then
-				ball.y = ball.y + 32
-			end
-		end
-
-	end
 
 
 	--! Show result of kick !--
