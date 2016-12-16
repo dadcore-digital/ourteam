@@ -17,6 +17,9 @@ local kick = {}
 	-- 3. Kick has surpassed the bounds of the original screen
 	kick.state.in_progress 		= false
 
+	-- 4. The kick is nearing completion but hasn't touched ground
+	kick.state.ending 			= false
+
 	-- 4. Kick has reached its final destination
 	kick.state.complete 		= false	
 				

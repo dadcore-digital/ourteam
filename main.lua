@@ -85,13 +85,15 @@ function love.update(dt)
 	if kick.state.beginning and ball.can_move_right() then	
 		
 		-- Move Ball
-		ball.move_x(ctr, scroll.interval)
+		-- ball.move_x(ctr, scroll.interval)
+		ball.ascend(ctr, scroll.interval)
 
 	elseif kick.state.beginning and not ball.can_move_right() then
 
 		-- Ball has moved as far right it can go
 		kick.state.beginning = false
 		kick.state.in_progress = true
+
 	end
 
 
@@ -101,13 +103,16 @@ function love.update(dt)
 		-- Scroll background and player
 		bg.scroll(ctr, scroll.interval, scroll.x_step)
 		player.scroll(ctr, scroll.interval, scroll.x_step)
+		
+		if ball.can_descend(bg.x, kick.target.x) then
+			ball.descend(ctr, scroll.interval)
+		end
 
 		-- Stop moving background when target reached
 		if kick.target.reached() then
 			
 			kick.state.in_progress = false
 			kick.state.complete = true
-
 		end
 	
 	end	

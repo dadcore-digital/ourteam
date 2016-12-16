@@ -43,6 +43,18 @@ local ball = {}
 	
 	end
 
+	function ball.can_descend(background_x, target_x)
+		-- Checks if the ball is within a certain distance of the target,
+		-- and returns true if so.
+
+		if bg.x <= (kick.target.x + 500) then
+			return true
+		end
+
+		return false
+
+	end
+
 	function ball.move_x(ctr, interval)
 		
 		-- Move the ball forward, given a counter and an interval used to
@@ -53,6 +65,24 @@ local ball = {}
 		end
 	
 	end
+
+	function ball.ascend(ctr, interval)
+		
+		if ctr > interval then
+			ball.x = ball.x + ball.step.x
+			ball.y = ball.y - 64
+		end
+	end
+
+	function ball.descend(ctr, interval)
+		
+		if ctr > interval then
+			if ball.y < ball.initial.y then
+				ball.y = ball.y + 64
+			end
+		end
+	end
+
 
 	function ball.reset()
 
