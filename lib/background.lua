@@ -39,6 +39,7 @@ local bg = {}
 
 	end
 
+
 	function bg.animation.start()
 		bg.animation.state = 'playing'
 	end

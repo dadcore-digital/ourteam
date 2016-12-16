@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
--- debug = true
+debug = true
 
 local k = require "vendor/katsudo"
 
@@ -85,14 +85,13 @@ function love.update(dt)
 	if kick.state.beginning and ball.can_move_right() then	
 		
 		-- Move Ball
-		ball.move(ctr, scroll.interval)
+		ball.move_x(ctr, scroll.interval)
 
 	elseif kick.state.beginning and not ball.can_move_right() then
 
 		-- Ball has moved as far right it can go
 		kick.state.beginning = false
 		kick.state.in_progress = true
-
 	end
 
 
