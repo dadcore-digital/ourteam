@@ -139,6 +139,11 @@ function love.keyreleased(key)
 end
 
 
+function love.mousepressed(x, y, button, istouch)
+	print(y)
+	diagnostics.toggle(x, y, button)
+end
+
 function love.draw()
 
 

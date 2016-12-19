@@ -1,4 +1,8 @@
 local diagnostics = {}
+	
+	diagnostics.show = true
+
+	diagnostics.area = {0, 0, 300, 720}
 
 	-- Table of debug print messages
 	dm = {}
@@ -11,14 +15,14 @@ local diagnostics = {}
 
 	   -- Only output debug info if global variable debug is true
 
-		if debug_enabled == true then
+		if debug_enabled and diagnostics.show then
 
 			bg_color = {0, 57, 255}
 			fg_color = {102, 144, 252}
 
 			-- C64 border style
 			love.graphics.setColor(fg_color)
-			love.graphics.rectangle('fill', 0, 0, 300, 720)
+			love.graphics.rectangle('fill', unpack(diagnostics.area))
 			
 			love.graphics.setColor(bg_color)
 			love.graphics.rectangle('fill', 20, 20, 260, 680)
@@ -43,5 +47,22 @@ local diagnostics = {}
 		end
 
 	end
+
+function diagnostics.toggle(x, y, button)
+
+	-- Toggle whether diagnostic panel is visible by clicking w/
+	-- mouse in diagnostics area
+
+	if (x >  diagnostics.area[1] and x < diagnostics.area[3]) and
+	   (y > diagnostics.area[2] and y < diagnostics.area[4]) and
+	   button == 1 then
+
+	   diagnostics.show = not diagnostics.show
+	end
+
+
+
+
+end	
 
 return diagnostics
