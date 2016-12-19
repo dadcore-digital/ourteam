@@ -32,7 +32,6 @@ function love.load(arg)
 	scroll = { interval = 0.1, x_step = 64}
 
 	-- Animations
-	bg.animation.load()
 	player.animation.load()
 
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -50,7 +49,6 @@ function love.update(dt)
 	ctr = (ctr or 0) + dt
 
 	-- Update Animations
-	bg.animation.update(dt, kick)
 	player.animation.update(dt)
 
 	--! Power meter start /stop !--
@@ -66,12 +64,12 @@ function love.update(dt)
 	end
 
 	if love.keyboard.isDown('right') then
-		camera.x = camera.x + 6
+		camera:move(6, 0)
 	end
 
 
 	if love.keyboard.isDown('left') then
-		camera.x = camera.x - 6
+		camera:move(-6, 0)
 	end
 
 	--! Kick off Phase !--
@@ -92,41 +90,19 @@ function love.update(dt)
 	-- This will move ball as far right on screen as it can go,
 	-- before whole screen starts scrolling.
 	
-	if kick.state.beginning and ball.can_move_right() then	
+	if kick.state_in_progress then	
 		
 		-- Move Ball
-		-- ball.move_x(ctr, scroll.interval)
-		ball.ascend(ctr, scroll.interval)
+		ball.move_x(ball.speed, 0)
+		-- camera:move(ball.speed, 0)
 
-	elseif kick.state.beginning and not ball.can_move_right() then
-
-		-- Ball has moved as far right it can go
-		kick.state.beginning = false
-		kick.state.in_progress = true
-
-	end
-
-
-	--! Scroll background until target is reached !--
-	if kick.state.in_progress then
-
-		-- Scroll background and player
-		bg.scroll(ctr, scroll.interval, scroll.x_step)
-		player.scroll(ctr, scroll.interval, scroll.x_step)
-		
-		if ball.can_descend(bg.x, kick.target.x) then
-			ball.descend(ctr, scroll.interval)
-		end
-
-		-- Stop moving background when target reached
-		if kick.target.reached() then
+		if kick.target.reached(ball.x) then
 			
 			kick.state.in_progress = false
 			kick.state.complete = true
 		end
-	
-	end	
 
+	end
 
 	--! Show result of kick !--
 	if kick.state.complete then
@@ -139,7 +115,6 @@ function love.update(dt)
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
 
-			bg.reset()
 			player.reset()
 			ball.reset()
 			kick.reset()

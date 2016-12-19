@@ -1,5 +1,11 @@
 local diagnostics = {}
 
+	-- Table of debug print messages
+	dm = {}
+	dm[#dm+1] = 'kick state complete: ' ..tostring(kick.state.complete)
+	dm[#dm+1] = 'kick.target.x: ' .. kick.target.x
+	dm[#dm+1] = 'ball initial: ' .. tostring(ball.initial.x)
+
 	
 	function diagnostics.draw(debug_enabled)
 
@@ -7,29 +13,32 @@ local diagnostics = {}
 
 		if debug_enabled == true then
 
+			bg_color = {0, 57, 255}
+			fg_color = {102, 144, 252}
+
+			-- C64 border style
+			love.graphics.setColor(fg_color)
+			love.graphics.rectangle('fill', 0, 0, 300, 720)
+			
+			love.graphics.setColor(bg_color)
+			love.graphics.rectangle('fill', 20, 20, 260, 680)
+
+			love.graphics.setColor(fg_color)
 			love.graphics.setNewFont(12)
-			love.graphics.setColor(0, 0, 0)
-			love.graphics.rectangle('fill', 25, 35, 200, 200)
 
+			-- Position of each message w/ line spacing
+			x = 50
+			y = 60
+			ls = 30
+			
+			-- Draw messages
+			for k, v in ipairs(dm) do
+				love.graphics.print(v, x, y)
+				y = y + ls
+			end
+
+			-- Reset color
 			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('bg.x: ' .. bg.x,  50, 50)
-
-			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('kick state complete: ' ..tostring(kick.state.complete),  50, 80)
-
-			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('kick.target.x: ' .. kick.target.x,  50, 100)
-
-			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('ball initial: ' .. tostring(ball.initial.x),  50, 130)
-
-			love.graphics.setColor(255, 255, 255)
-			love.graphics.print('ball path' .. tostring(ball.path),  50, 160)
-
-			love.graphics.setColor(255, 255, 255)
-			can_descend = bg.x <= (kick.target.x + 1000)					
-			love.graphics.print('ball can descend: ' .. tostring(can_descend),  50, 190)
-
 
 		end
 

@@ -44,17 +44,6 @@ local player = {}
 	end
 
 
-	function player.scroll(ctr, interval, x_step)
-
-		-- Move the player backward (to left), given a counter and an interval used to
-		-- only draw animations every x number of cycles.
-
-		if ctr > scroll.interval then		  
-		  player.x = player.x - x_step
-		end
-
-	end
-
 	function player.start()
 
 		-- Player has begun the run up to the kick
