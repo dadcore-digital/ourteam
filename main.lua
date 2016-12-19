@@ -3,6 +3,7 @@ debug = true
 
 local k = require "vendor/katsudo"
 
+camera 	  		= require 'lib/camera'
 bg 				= require 'lib/background'
 player 			= require 'lib/player'
 ball 			= require 'lib/ball'
@@ -62,6 +63,15 @@ function love.update(dt)
 		meter.enabled = false
 		player.start()
 
+	end
+
+	if love.keyboard.isDown('right') then
+		camera.x = camera.x + 6
+	end
+
+
+	if love.keyboard.isDown('left') then
+		camera.x = camera.x - 6
 	end
 
 	--! Kick off Phase !--
@@ -156,13 +166,19 @@ end
 
 function love.draw()
 
+
 	post_effect:draw(function()
 
-		bg.draw()
-		player.draw()
-		meter.draw()
-		ball.draw()
-		message.kick.draw(msg_font, kick)
+		camera:set()
+
+			bg.draw()
+			player.draw()
+			meter.draw()
+			ball.draw()
+			message.kick.draw(msg_font, kick)
+		
+		camera:unset()
+
 
     end) -- end post processing
 

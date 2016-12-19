@@ -4,7 +4,7 @@ local bg = {}
 	
 	bg.initial 				= {}
 
-	bg.initial.x 			= -300
+	bg.initial.x 			= 0
 	bg.initial.y 			= -24 
 	
 	bg.x 					= bg.initial.x
