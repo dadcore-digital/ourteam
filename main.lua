@@ -145,16 +145,16 @@ function love.draw()
 		message.kick.draw(msg_font, kick)
 
 
-    end) -- end post processing
+	end) -- end post processing
 
 	-- Monitor Frame
-    love.graphics.draw(frame_img, 0, 0)
+	love.graphics.draw(frame_img, 0, 0)
 
-   	-- Reset color
+	-- Reset color
 	love.graphics.setColor(255, 255, 255, 255)
 
 	-- Diagnostic Panel
-    diagnostics:draw(debug, diag_data)
+	diagnostics:draw(debug, diag_data)
 
 end
 
