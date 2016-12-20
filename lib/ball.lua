@@ -19,8 +19,8 @@ local ball = {}
 
 	function ball.set_path(target)
 
-		ball.midpoint 	= ball.initial.x + ((target - ball.initial.x) / 2 )
-		ball.apogee   	= -200
+		ball.midpoint 	= ball.initial.x + ( target / 2 )
+		ball.apogee   	= ball.initial.y - 1000
 		ball.path 	= love.math.newBezierCurve( ball.initial.x, ball.initial.y, ball.midpoint, ball.apogee, target + ball.initial.x, ball.initial.y )
 		-- ball.path 	= ball.path:render(5)
 
