@@ -3,7 +3,6 @@ debug = true
 
 local k = require "vendor/katsudo"
 
-btn 	  		= require 'lib/buttons'
 camera 	  		= require 'lib/camera'
 bg 				= require 'lib/background'
 player 			= require 'lib/player'
@@ -59,16 +58,6 @@ function love.update(dt)
 	-- Get that meter moving
 	meter.fluctuate() 
 
-	-- Stop meter and start player running to kick --
-	if btn.a.pressed and kick:is_ready() then
-		
-		if not btn.a.isrepeat then
-			meter.enabled = false
-			player.start()
-		else
-			btn.a.isrepeat = false
-		end
-	end
 
 	if love.keyboard.isDown('right') then
 		camera:move(6, 0)
@@ -114,14 +103,12 @@ function love.update(dt)
 		message.kick.set(kick.success)
 
 		-- Reset everything back to beginning
-		if btn.a.pressed then
-
+		if love.keyboard.isDown('space') then
 			player.reset()
 			ball.reset()
 			kick.reset()
 			meter.reset()
 			camera:setPosition(0,0)
-			btn.a.isrepeat = true
 		end
 
 	end
@@ -135,18 +122,16 @@ end
 
 function love.keypressed(key)
    if key == "space" then
-      btn.a.pressed = true
-      print 'space pressed'
+
+	-- Stop meter and start player running to kick --
+	if kick:is_ready() then		
+		meter.enabled = false
+		player.start()
+	end
+
    end
 end
  
- function love.keyreleased(key)
-   if key == "space" then
-      btn.a.pressed = false
-      print 'space released'
-   end
- end
-
 
 function love.mousepressed(x, y, button, istouch)
 	diagnostics:toggle(x, y, button)

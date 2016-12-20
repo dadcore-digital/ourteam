@@ -27,10 +27,6 @@ local diagnostics = {}
 				'is_in_progress: ' .. tostring(kick:is_in_progress()),
 				'is_complete: ' .. tostring(kick:is_complete()),
 
-				'','[ BUTTONS ]',
-				'a pressed: ' .. tostring(btn.a.pressed),
-				'a is repeat: ' .. tostring(btn.a.isrepeat),
-
 			 }
 
 		diagnostics.area = {0, 0, 300, 720}

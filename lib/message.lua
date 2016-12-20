@@ -26,6 +26,7 @@ local message = {}
 			love.graphics.setFont(font)
 			love.graphics.setColor(255, 255, 255, 255)
 			love.graphics.print(message.kick.text, 530, 350) -- Message
+
 		end
 	end
 
