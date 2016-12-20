@@ -44,7 +44,14 @@ function love.update(dt)
 	
 
 	-- Utilities & Helpers
-	if debug then require('vendor/lovebird').update() end
+	if debug then
+		require('vendor/lovebird').update()
+		if love.keyboard.isDown('left') then 
+			camera.x = camera.x - 20
+		elseif love.keyboard.isDown('right') then
+			camera.x = camera.x + 20
+		end
+	end
 
 	-- Set Animation Counter
 	ctr = (ctr or 0) + dt
@@ -67,14 +74,17 @@ function love.update(dt)
 	if player:is_complete() then
 		player.state = player.STATES.ready
 		kick.start()
+		ball.set_path(kick.target.x)
 	end
 
 	--! Move ball once kick starts !--
 	if kick:is_in_progress() then	
 
 		-- Move Ball
-		ball.move_x(ball.speed)
-		camera:move(ball.speed, 0)
+		-- ball.move()
+		-- ball.move_x(ball.speed)
+
+		-- camera:move(ball.speed, 0)
 
 		if kick.target.reached(ball.distance) then
 			kick.state = kick.STATES.complete
@@ -128,7 +138,6 @@ function love.mousepressed(x, y, button, istouch)
 end
 
 function love.draw()
-
 
 	post_effect:draw(function()
 

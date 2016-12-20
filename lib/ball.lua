@@ -10,11 +10,30 @@ local ball = {}
 
 	-- Track how far the ball has travelled from kickoff
 	ball.distance = 0
-
+	ball.progress = 1
 	ball.speed = 8
+	ball.path = nil
 
 	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
 
+
+	function ball.set_path(target)
+
+		ball.midpoint 	= ball.initial.x + ((target - ball.initial.x) / 2 )
+		ball.apogee   	= -200
+		ball.path 	= love.math.newBezierCurve( ball.initial.x, ball.initial.y, ball.midpoint, ball.apogee, target + ball.initial.x, ball.initial.y )
+		-- ball.path 	= ball.path:render(5)
+
+	end		
+
+	function ball.move()
+
+		ball.x = ball.path[ball.progress]
+		ball.y = ball.path[ball.progress]+ 1
+
+		ball.progress = ball.progress + 2
+
+	end
 
 	function ball.move_x(speed)
 		
@@ -22,7 +41,7 @@ local ball = {}
 		-- only draw animations every x number of cycles.
 
 		ball.x 			= ball.x + speed
-		ball.distance 	= ball.x - ball.initial.x
+		ball.distance 	= ball.x - ball.initial.x		
 		
 	end
 
@@ -38,6 +57,10 @@ local ball = {}
 	function ball.draw()
 
 		love.graphics.draw(ball.img, ball.x, ball.y)
+		
+		if ball.path then
+			love.graphics.line(ball.path:render(5))
+		end
 
 	end
 

@@ -16,7 +16,7 @@ local kick = {}
 	function kick.start()
 		
 		kick.target.x = (meter.strength + 1) * kick.multiplier
-		kick.state = kick.STATES.in_progress
+		kick.state = kick.STATES.in_progress		
 
 	end
 

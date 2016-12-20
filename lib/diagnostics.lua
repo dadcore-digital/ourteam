@@ -9,9 +9,12 @@ local diagnostics = {}
 				'[ BALL ]',
 				'initial: ' .. tostring(ball.initial.x),
 				'x: ' .. tostring(ball.x),
+				'y: ' .. tostring(ball.y),
 				'distance: ' .. tostring(ball.distance),
 				'goal: ' .. tostring(goal.x),
-				
+				'curve start x, y: ' .. tostring(ball.initial.x) .. ', ' ..tostring(ball.initial.y),
+				'curve midpoint x, y: ' .. tostring(ball.midpoint) .. ', ' .. tostring(ball.apogee),
+				'curve end x, y: ' .. tostring(kick.target.x + ball.initial.x) .. ', ' .. tostring(ball.initial.y),
 				'','[ PLAYER ]',
 				'x: ' .. tostring(player.x),
 				'state: ' .. tostring(player.state),
