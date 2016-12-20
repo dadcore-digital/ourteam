@@ -17,9 +17,6 @@ function love.load(arg)
 	-- Window Settings
 	love.window.setMode( 1280, 720)
 
-	-- Input Settings
-	love.keyboard.setKeyRepeat(false)
-
 	-- Shaders
 	post_effect = require 'lib/shaders'
 
@@ -31,11 +28,12 @@ function love.load(arg)
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
 	-- Constants
-	goal = { x = 3400 }
+	goal = { x = 3900 }
 	interval = 0.1
 
 	-- Animations
 	player.animation.load()
+	bg.animation.load()
 
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 
@@ -101,9 +99,11 @@ function love.update(dt)
 
 		kick.set_success_fail(goal.x)
 		message.kick.set(kick.success)
+		bg.animation.start()
 
 		-- Reset everything back to beginning
 		if love.keyboard.isDown('space') then
+			bg.animation.stop()
 			player.reset()
 			ball.reset()
 			kick.reset()
