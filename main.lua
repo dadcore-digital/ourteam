@@ -141,7 +141,7 @@ end
 
 function love.mousepressed(x, y, button, istouch)
 	print(y)
-	diagnostics.toggle(x, y, button)
+	diagnostics:toggle(x, y, button)
 end
 
 function love.draw()
@@ -169,7 +169,7 @@ function love.draw()
 	love.graphics.setColor(255, 255, 255, 255)
 
 	-- Diagnostic Panel
-    diagnostics.draw(debug, diag_data)
+    diagnostics:draw(debug, diag_data)
 
 end
 

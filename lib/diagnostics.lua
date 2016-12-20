@@ -11,18 +11,18 @@ local diagnostics = {}
 	dm[#dm+1] = 'ball initial: ' .. tostring(ball.initial.x)
 
 	
-	function diagnostics.draw(debug_enabled)
+	function diagnostics:draw(debug_enabled)
 
 	   -- Only output debug info if global variable debug is true
 
-		if debug_enabled and diagnostics.show then
+		if debug_enabled and self.show then
 
 			bg_color = {0, 57, 255}
 			fg_color = {102, 144, 252}
 
 			-- C64 border style
 			love.graphics.setColor(fg_color)
-			love.graphics.rectangle('fill', unpack(diagnostics.area))
+			love.graphics.rectangle('fill', unpack(self.area))
 			
 			love.graphics.setColor(bg_color)
 			love.graphics.rectangle('fill', 20, 20, 260, 680)
@@ -48,19 +48,17 @@ local diagnostics = {}
 
 	end
 
-function diagnostics.toggle(x, y, button)
+function diagnostics:toggle(x, y, button)
 
 	-- Toggle whether diagnostic panel is visible by clicking w/
 	-- mouse in diagnostics area
 
-	if (x >  diagnostics.area[1] and x < diagnostics.area[3]) and
-	   (y > diagnostics.area[2] and y < diagnostics.area[4]) and
+	if (x >  self.area[1] and x < self.area[3]) and
+	   (y > self.area[2] and y < self.area[4]) and
 	   button == 1 then
 
-	   diagnostics.show = not diagnostics.show
+	   self.show = not self.show
 	end
-
-
 
 
 end	
