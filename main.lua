@@ -56,16 +56,6 @@ function love.update(dt)
 	-- Get that meter moving
 	meter.fluctuate() 
 
-
-	if love.keyboard.isDown('right') then
-		camera:move(6, 0)
-	end
-
-
-	if love.keyboard.isDown('left') then
-		camera:move(-6, 0)
-	end
-
 	--! Kick off Phase !--
 	-- Player is running towards the ball --
 	if player:is_in_progress() and not player.can_kick() then
