@@ -11,11 +11,9 @@ local player = {}
 	player.y 				= player.initial.y
 	player.img 				= love.graphics.newImage('assets/graphics/sprites/player.png')
 
-	player.run 				= {}
-	player.run.ready 		= true
-	player.run.in_progress 	= false
-	player.run.done			= false
-	player.run.length 		= 345
+	player.STATES			= { ready = 1, in_progress = 2, complete = 3}
+	player.state 			= player.STATES.ready
+	player.run_length 		= 345
 
 
 	player.speed			= 300
@@ -48,8 +46,7 @@ local player = {}
 
 		-- Player has begun the run up to the kick
 
-		player.run.ready 		= false
-		player.run.in_progress 	= true
+		player.state 			= player.STATES.in_progress
 		player.animation.state 	= 'playing'
 
 	end
@@ -58,9 +55,8 @@ local player = {}
 
 		-- Player has reached the ball is kicking
 		
-		player.run.in_progress 	= false
-		player.run.done 		= true
-		player.animation.state = 'stopped'
+		player.state 			= player.STATES.complete
+		player.animation.state  = 'stopped'
 
 	end
 
@@ -68,15 +64,14 @@ local player = {}
 
 		-- Player has kicked the ball
 
-		player.run.ready 		= true
-		player.run.done 		= false
+		player.state 			= player.STATES.ready
 
 	end	
 
 	function player.can_kick()
 
 		-- Checks if player is in position to initiate kick
-		if player.x >= player.initial.x + player.run.length then
+		if player.x >= player.initial.x + player.run_length then
 			player.stop()
 			return true
 		end
@@ -98,10 +93,7 @@ local player = {}
 
 	function player.reset()
 
-		player.run.ready 		= true
-		player.run.running 		= false
-		player.run.done 		= false
-		
+		player.state 			= player.STATES.ready
 		player.x 				= player.initial.x
 	
 	end
@@ -123,5 +115,29 @@ local player = {}
 
 	end
 
+
+	function player:is_ready()
+		if self.state == self.STATES.ready then
+			return true
+		end
+
+		return false
+	end
+
+	function player:is_in_progress()
+		if self.state == self.STATES.in_progress then
+			return true
+		end
+
+		return false
+	end	
+
+	function player:is_complete()
+		if self.state == self.STATES.complete then
+			return true
+		end
+
+		return false
+	end	
 
 return player

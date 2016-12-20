@@ -16,7 +16,7 @@ local message = {}
 
 	function message.kick.draw(font, kick)
 
-		if kick.state.complete then
+		if kick:is_complete() then
 			love.graphics.setColor(38, 86, 95, 255)
 			love.graphics.rectangle('fill', 320, 270, 660, 210) -- Frame
 

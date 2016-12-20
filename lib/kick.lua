@@ -1,41 +1,31 @@
 local kick = {}
 	
-	kick.state = {}
 	kick.target = {}
 	kick.target.x 				= 0 
 	kick.multiplier 			= 17
 	kick.success 				= false
 
-	-- These four states control the flow of the game:
-	
+	-- These four states control the flow of the game:	
 	-- 1. Ready for kick off
-	kick.state.ready 			= true
-
 	-- 2. Kick has surpassed the bounds of the original screen
-	kick.state.in_progress 		= false
-
-	-- 3. The kick is nearing completion but hasn't touched ground
-	kick.state.ending 			= false
-
-	-- 4. Kick has reached its final destination
-	kick.state.complete 		= false	
-				
+	-- 3. Kick has reached its final destination
+	
+	kick.STATES = {ready = 1, in_progress = 2,  complete = 3}
+	kick.state = kick.STATES.ready
 
 	function kick.start()
 		
 		kick.target.x = (meter.strength + 1) * kick.multiplier
-		kick.state.ready = false
-		kick.state.in_progress = true
+		kick.state = kick.STATES.in_progress
 
 	end
 
-
-	function kick.target.reached(ball_x)
+	function kick.target.reached(ball_distance)
 
 		-- Calculate if target has been reached by comparing
 		-- background x position vs target x position.
 
-		if ball_x >= kick.target.x then
+		if ball_distance >= kick.target.x and kick.target.x ~= 0 then
 			return true
 		end
 
@@ -45,7 +35,7 @@ local kick = {}
 
 	function kick.set_success_fail(goal_x)
 		
-		if kick.target.x <= goal_x then
+		if kick.target.x >= goal_x then
 			kick.success = true
 		else
 			kick.success = false
@@ -56,12 +46,37 @@ local kick = {}
 
 	function kick.reset()
 
-		kick.state.beginning = false
-		kick.state.in_progress = false
-		kick.state.complete = false
+		kick.state = kick.STATES.ready
 		kick.target.x = 0
 		kick.success = false
 
 	end
+
+	function kick:is_ready()
+		if self.state == self.STATES.ready then
+			return true
+		end
+
+		return false
+
+	end	
+
+	function kick:is_in_progress()
+		if self.state == self.STATES.in_progress then
+			return true
+		end
+
+		return false
+
+	end	
+
+	function kick:is_complete()
+		if self.state == self.STATES.complete then
+			return true
+		end
+
+		return false
+
+	end	
 
 return kick

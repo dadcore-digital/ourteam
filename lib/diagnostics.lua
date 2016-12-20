@@ -2,16 +2,38 @@ local diagnostics = {}
 	
 	diagnostics.show = true
 
-	diagnostics.area = {0, 0, 300, 720}
-
-	-- Table of debug print messages
-	dm = {}
-	dm[#dm+1] = 'kick state complete: ' ..tostring(kick.state.complete)
-	dm[#dm+1] = 'kick.target.x: ' .. kick.target.x
-	dm[#dm+1] = 'ball initial: ' .. tostring(ball.initial.x)
-
-	
 	function diagnostics:draw(debug_enabled)
+
+		-- Table of debug print messages
+		dm = { 
+				'[ BALL ]',
+				'initial: ' .. tostring(ball.initial.x),
+				'x: ' .. tostring(ball.x),
+				'distance: ' .. tostring(ball.distance),
+				'goal: ' .. tostring(goal.x),
+				
+				'','[ PLAYER ]',
+				'x: ' .. tostring(player.x),
+				'state: ' .. tostring(player.state),
+				'is_ready: ' .. tostring(player:is_ready()),
+				'is_in_progress: ' .. tostring(player:is_in_progress()),
+				'is_complete: ' .. tostring(player:is_complete()),
+				
+				'','[ KICK ]',
+				'target.x: ' .. tostring(kick.target.x),
+				'target reached: ' .. tostring(kick.target.reached(ball.distance)),
+				'state: ' ..tostring(kick.state),
+				'is_ready: ' .. tostring(kick:is_ready()),
+				'is_in_progress: ' .. tostring(kick:is_in_progress()),
+				'is_complete: ' .. tostring(kick:is_complete()),
+
+				'','[ BUTTONS ]',
+				'a pressed: ' .. tostring(btn.a.pressed),
+				'a is repeat: ' .. tostring(btn.a.isrepeat),
+
+			 }
+
+		diagnostics.area = {0, 0, 300, 720}
 
 	   -- Only output debug info if global variable debug is true
 
@@ -32,8 +54,8 @@ local diagnostics = {}
 
 			-- Position of each message w/ line spacing
 			x = 50
-			y = 60
-			ls = 30
+			y = 50
+			ls = 20
 			
 			-- Draw messages
 			for k, v in ipairs(dm) do

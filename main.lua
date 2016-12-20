@@ -3,6 +3,7 @@ debug = true
 
 local k = require "vendor/katsudo"
 
+btn 	  		= require 'lib/buttons'
 camera 	  		= require 'lib/camera'
 bg 				= require 'lib/background'
 player 			= require 'lib/player'
@@ -17,6 +18,9 @@ function love.load(arg)
 	-- Window Settings
 	love.window.setMode( 1280, 720)
 
+	-- Input Settings
+	love.keyboard.setKeyRepeat(false)
+
 	-- Shaders
 	post_effect = require 'lib/shaders'
 
@@ -28,8 +32,8 @@ function love.load(arg)
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
 	-- Constants
-	goal = { x = -3400 }
-	scroll = { interval = 0.1, x_step = 64}
+	goal = { x = 3400 }
+	interval = 0.1
 
 	-- Animations
 	player.animation.load()
@@ -53,14 +57,17 @@ function love.update(dt)
 
 	--! Power meter start /stop !--
 	-- Get that meter moving
-	meter.fluctuate()
+	meter.fluctuate() 
 
 	-- Stop meter and start player running to kick --
-	if love.keyboard.isDown('space') and kick.state.ready then
+	if btn.a.pressed and kick:is_ready() then
 		
-		meter.enabled = false
-		player.start()
-
+		if not btn.a.isrepeat then
+			meter.enabled = false
+			player.start()
+		else
+			btn.a.isrepeat = false
+		end
 	end
 
 	if love.keyboard.isDown('right') then
@@ -73,39 +80,33 @@ function love.update(dt)
 	end
 
 	--! Kick off Phase !--
-
 	-- Player is running towards the ball --
-	if player.run.in_progress and not player.can_kick() then
+	if player:is_in_progress() and not player.can_kick() then
 		player.animation.update(dt)
 		player.move(dt)
 	end
 
 	-- Player has reached the ball and is kicking --
-	if player.run.done then
+	if player:is_complete() then
+		player.state = player.STATES.ready
 		kick.start()
-		player.ready()
 	end
 
 	--! Move ball once kick starts !--
-	-- This will move ball as far right on screen as it can go,
-	-- before whole screen starts scrolling.
-	
-	if kick.state_in_progress then	
-		
-		-- Move Ball
-		ball.move_x(ball.speed, 0)
-		-- camera:move(ball.speed, 0)
+	if kick:is_in_progress() then	
 
-		if kick.target.reached(ball.x) then
-			
-			kick.state.in_progress = false
-			kick.state.complete = true
+		-- Move Ball
+		ball.move_x(ball.speed)
+		camera:move(ball.speed, 0)
+
+		if kick.target.reached(ball.distance) then
+			kick.state = kick.STATES.complete
 		end
 
 	end
 
 	--! Show result of kick !--
-	if kick.state.complete then
+	if kick:is_complete() then
 		
 		-- Set kick success / failure and show message
 
@@ -113,34 +114,41 @@ function love.update(dt)
 		message.kick.set(kick.success)
 
 		-- Reset everything back to beginning
-		if love.keyboard.isDown('space') then
+		if btn.a.pressed then
 
 			player.reset()
 			ball.reset()
 			kick.reset()
 			meter.reset()
-
+			camera:setPosition(0,0)
+			btn.a.isrepeat = true
 		end
 
 	end
 
 	--! Reset animation counter if interval hit !--
-	while ctr  > scroll.interval do
+	while ctr  > interval do
 		ctr = 0
 	end
 
 end
 
-
-function love.keyreleased(key)
+function love.keypressed(key)
    if key == "space" then
-      kick.state.ready = true
+      btn.a.pressed = true
+      print 'space pressed'
    end
 end
+ 
+ function love.keyreleased(key)
+   if key == "space" then
+      btn.a.pressed = false
+      print 'space released'
+   end
+ end
 
 
 function love.mousepressed(x, y, button, istouch)
-	print(y)
 	diagnostics:toggle(x, y, button)
 end
 
@@ -153,11 +161,13 @@ function love.draw()
 
 			bg.draw()
 			player.draw()
-			meter.draw()
 			ball.draw()
-			message.kick.draw(msg_font, kick)
 		
 		camera:unset()
+
+
+		meter.draw()
+		message.kick.draw(msg_font, kick)
 
 
     end) -- end post processing
