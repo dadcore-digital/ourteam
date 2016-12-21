@@ -20,18 +20,6 @@ local kick = {}
 
 	end
 
-	function kick.target.reached(ball_distance)
-
-		-- Calculate if target has been reached by comparing
-		-- background x position vs target x position.
-
-		if ball_distance >= kick.target.x and kick.target.x ~= 0 then
-			return true
-		end
-
-		return false
-
-	end
 
 	function kick.set_success_fail(goal_x)
 		

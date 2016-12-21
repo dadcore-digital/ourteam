@@ -79,11 +79,11 @@ function love.update(dt)
 		-- Move Ball
 			if ball.x < kick.target.x + ball.initial.x then
 					ball.move(dt)
+					camera:setPosition(ball.x - 700, 0)
 			end
 
-		-- camera:move(ball.speed, 0)
 
-		if kick.target.reached(ball.distance) then
+		if ball.progress >= 1 then
 			kick.state = kick.STATES.complete
 		end
 

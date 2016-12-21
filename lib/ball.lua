@@ -9,9 +9,8 @@ local ball = {}
 	ball.y = ball.initial.y
 
 	-- Track how far the ball has travelled from kickoff
-	ball.distance = 0
-	ball.progress = 1
-	ball.speed = 2
+	ball.speed = .005
+	ball.progress = 0
 	ball.path = nil
 
 	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
@@ -21,20 +20,15 @@ local ball = {}
 
 		ball.midpoint 	= ball.initial.x + ( target / 2 )
 		ball.apogee   	= ball.initial.y - 900
-		-- ball.apogee   	= ball.initial.y 
 		ball.path 		= love.math.newBezierCurve( ball.initial.x, ball.initial.y, ball.midpoint, ball.apogee, target + ball.initial.x, ball.initial.y )
-		ball.path_points 	= ball.path:render(3)
 
 	end		
 
 	function ball.move(dt)
 
-
-		if ball.progress < #ball.path_points then
-			ball.x = ball.path_points[ball.progress]
-			ball.y = ball.path_points[ball.progress + 1]
-
-			ball.progress = ball.progress + 2
+		if ball.progress <= 1 then
+			ball.x, ball.y = ball.path:evaluate(ball.progress)
+			ball.progress = ball.progress + ball.speed
 		end
 
 	end
@@ -44,7 +38,8 @@ local ball = {}
 
 		ball.x = ball.initial.x
 		ball.y = ball.initial.y
-		ball.distance = 0
+		ball.progress = 0
+		ball.path = nil
 
 	end
 
@@ -53,7 +48,7 @@ local ball = {}
 
 		love.graphics.draw(ball.img, ball.x, ball.y)
 		
-		if ball.path then
+		if ball.path and debug then
 			love.graphics.line(ball.path:render(5))
 		end
 

@@ -24,7 +24,6 @@ local diagnostics = {}
 				
 				'','[ KICK ]',
 				'target.x: ' .. tostring(kick.target.x),
-				'target reached: ' .. tostring(kick.target.reached(ball.distance)),
 				'state: ' ..tostring(kick.state),
 				'is_ready: ' .. tostring(kick:is_ready()),
 				'is_in_progress: ' .. tostring(kick:is_in_progress()),
