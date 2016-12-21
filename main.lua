@@ -29,7 +29,7 @@ function love.load(arg)
 
 	-- Constants
 	goal = { x = 3900 }
-	interval = 0.1
+	interval = 100
 
 	-- Animations
 	player.animation.load()
@@ -38,7 +38,6 @@ function love.load(arg)
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 end
-
 
 function love.update(dt)
 	
@@ -52,9 +51,6 @@ function love.update(dt)
 			camera.x = camera.x + 20
 		end
 	end
-
-	-- Set Animation Counter
-	ctr = (ctr or 0) + dt
 
 	-- Update Animations
 	player.animation.update(dt)
@@ -81,8 +77,9 @@ function love.update(dt)
 	if kick:is_in_progress() then	
 
 		-- Move Ball
-		-- ball.move()
-		-- ball.move_x(ball.speed)
+			if ball.x < kick.target.x + ball.initial.x then
+					ball.move(dt)
+			end
 
 		-- camera:move(ball.speed, 0)
 
@@ -113,10 +110,6 @@ function love.update(dt)
 
 	end
 
-	--! Reset animation counter if interval hit !--
-	while ctr  > interval do
-		ctr = 0
-	end
 
 end
 
