@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = true
+debug = false
 
 local k = require "vendor/katsudo"
 
@@ -70,6 +70,7 @@ function love.update(dt)
 	if player:is_complete() then
 		player.state = player.STATES.ready
 		kick.start()
+		ball.set_speed_apogee(kick.target.x)
 		ball.set_path(kick.target.x)
 	end
 
