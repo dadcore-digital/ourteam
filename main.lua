@@ -12,6 +12,8 @@ meter 			= require 'lib/meter'
 message 		= require 'lib/message'
 diagnostics 	= require 'lib/diagnostics'
 
+
+
 function love.load(arg)
 
 	-- Window Settings
