@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = true
+debug = false
 
 local k = require "vendor/katsudo"
 

@@ -9,7 +9,10 @@ local player = {}
 	
 	player.x 				= player.initial.x
 	player.y 				= player.initial.y
-	player.img 				= love.graphics.newImage('assets/graphics/sprites/player.png')
+
+	player.img 				= {}
+	player.img.ready 		= love.graphics.newImage('assets/graphics/sprites/player.png')
+	player.img.kicked 		= love.graphics.newImage('assets/graphics/sprites/player_kicked.png')
 
 	player.STATES			= { ready = 1, in_progress = 2, complete = 3}
 	player.state 			= player.STATES.ready
@@ -19,7 +22,7 @@ local player = {}
 	player.speed			= 300
 
 	player.animation 		= {}
-	player.animation.state  = 'stopped'
+	player.animation.state  = 'ready'
 
 	function player.animation.load()
 
@@ -38,7 +41,7 @@ local player = {}
 	end
 
 	function player.animation.stop()
-		player.animation.state = 'stopped'
+		player.animation.state = 'ready'
 	end
 
 
@@ -56,7 +59,7 @@ local player = {}
 		-- Player has reached the ball is kicking
 		
 		player.state 			= player.STATES.complete
-		player.animation.state  = 'stopped'
+		player.animation.state  = 'kicked'
 
 	end
 
@@ -94,6 +97,7 @@ local player = {}
 	function player.reset()
 
 		player.state 			= player.STATES.ready
+		player.animation.state 	= 'ready'
 		player.x 				= player.initial.x
 	
 	end
@@ -102,13 +106,17 @@ local player = {}
 	function player.draw()
 
 
-		if player.animation.state == 'stopped' then
+		if player.animation.state == 'ready' then
 
-			love.graphics.draw(player.img, player.x, player.y)
+			love.graphics.draw(player.img.ready, player.x, player.y)
 		
 		elseif player.animation.state == 'playing' then
 
 			player.animation.player:draw (player.x,  player.y, 0, 1, 1)
+
+		elseif player.animation.state == 'kicked' then
+
+			love.graphics.draw(player.img.kicked, player.x, player.y)
 
 		end
 
