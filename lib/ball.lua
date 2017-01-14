@@ -37,6 +37,7 @@ local ball = {}
 
  		ball.animation.moving  = k.new("/assets/graphics/sprites/football_sheet.png", 20, 20, 4, ball.animation.speed, 'rough')
 		ball.shadow.animation.moving  = k.new("/assets/graphics/sprites/football_shadow_sheet.png", 20, 20, 4, ball.animation.speed, 'rough')
+
 	end
 
 	function ball.animation.update(dt)

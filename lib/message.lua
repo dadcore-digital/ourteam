@@ -20,7 +20,7 @@ local message = {}
 			love.graphics.setColor(38, 86, 95, 255)
 			love.graphics.rectangle('fill', 320, 270, 660, 210) -- Frame
 
-		    love.graphics.setColor(0, 0, 0)
+			love.graphics.setColor(0, 0, 0)
 			love.graphics.rectangle('fill', 352, 302, 596, 146) -- Background
 
 			love.graphics.setFont(font)
