@@ -1,3 +1,5 @@
+local k = require "vendor/katsudo"
+
 local ball = {}
 
 	ball.initial = {}
@@ -14,11 +16,35 @@ local ball = {}
 	ball.progress = 0
 	ball.path = nil
 
-	-- 4000 / 0.00375 = 1066666
-	-- 2000 / 0.00375 = 533,333
+	ball.animation = {}
+	ball.animation.ready = love.graphics.newImage('assets/graphics/sprites/football.png')
+	ball.animation.state = 'ready'
+	ball.animation.speed = .09
 
-	ball.img = love.graphics.newImage('assets/graphics/sprites/football.png')
+	-- Shadow of Ball 
+	ball.shadow  = {}
+	ball.shadow.initial = {}
+	ball.shadow.initial.x = ball.initial.x
+	ball.shadow.initial.y = ball.initial.y + 10
 
+	ball.shadow.x = ball.shadow.initial.x
+	ball.shadow.y = ball.shadow.initial.y
+
+	ball.shadow.animation = {}
+	ball.shadow.animation.ready = love.graphics.newImage('assets/graphics/sprites/football_shadow.png')
+
+	function ball.animation.load()
+
+ 		ball.animation.moving  = k.new("/assets/graphics/sprites/football_sheet.png", 20, 20, 4, ball.animation.speed, 'rough')
+		ball.shadow.animation.moving  = k.new("/assets/graphics/sprites/football_shadow_sheet.png", 20, 20, 4, ball.animation.speed, 'rough')
+	end
+
+	function ball.animation.update(dt)
+
+		ball.animation.moving:update(dt)
+		ball.shadow.animation.moving:update(dt)
+
+	end
 
 	function ball.set_speed_apogee(target)
 		if target > 0 and target < 1000 then
@@ -45,9 +71,13 @@ local ball = {}
 
 	function ball.move(dt)
 
+		ball.animation.state = 'moving'
+
 		if ball.progress <= 1 then
 			ball.x, ball.y = ball.path:evaluate(ball.progress)
 			ball.progress = ball.progress + ball.speed
+
+			ball.shadow.x = ball.x
 		end
 
 	end
@@ -57,15 +87,27 @@ local ball = {}
 
 		ball.x = ball.initial.x
 		ball.y = ball.initial.y
+		ball.shadow.x = ball.shadow.initial.x
 		ball.progress = 0
 		ball.path = nil
+		ball.animation.state = 'ready'
 
 	end
 
 
 	function ball.draw()
 
-		love.graphics.draw(ball.img, ball.x, ball.y)
+		if ball.animation.state == 'ready' then
+
+			love.graphics.draw(ball.shadow.animation.ready, ball.shadow.x, ball.shadow.y)
+			love.graphics.draw(ball.animation.ready, ball.x, ball.y)
+
+		elseif ball.animation.state == 'moving' then
+			
+			ball.shadow.animation.moving:draw(ball.shadow.x, ball.shadow.y, 0, 1, 1)
+			ball.animation.moving:draw(ball.x, ball.y, 0, 1, 1)
+
+		end
 		
 		if ball.path and debug then
 			love.graphics.line(ball.path:render(5))

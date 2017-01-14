@@ -35,6 +35,7 @@ function love.load(arg)
 
 	-- Animations
 	player.animation.load()
+	ball.animation.load()
 	bg.animation.load()
 
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
