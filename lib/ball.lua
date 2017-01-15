@@ -18,7 +18,7 @@ local ball = {}
 
 	ball.animation = {}
 	ball.animation.ready = love.graphics.newImage('assets/graphics/sprites/football.png')
-	ball.animation.state = 'ready'
+	ball.animation.complete = love.graphics.newImage('assets/graphics/sprites/football_kick_complete.png')
 	ball.animation.speed = .09
 
 	-- Shadow of Ball 
@@ -32,7 +32,8 @@ local ball = {}
 
 	ball.shadow.animation = {}
 	ball.shadow.animation.ready = love.graphics.newImage('assets/graphics/sprites/football_shadow.png')
-
+	ball.shadow.animation.complete = love.graphics.newImage('assets/graphics/sprites/football_shadow_kick_complete.png')
+	
 	function ball.animation.load()
 
  		ball.animation.moving  = k.new("/assets/graphics/sprites/football_sheet.png", 20, 20, 4, ball.animation.speed, 'rough')
@@ -72,8 +73,6 @@ local ball = {}
 
 	function ball.move(dt)
 
-		ball.animation.state = 'moving'
-
 		if ball.progress <= 1 then
 			ball.x, ball.y = ball.path:evaluate(ball.progress)
 			ball.progress = ball.progress + ball.speed
@@ -91,22 +90,25 @@ local ball = {}
 		ball.shadow.x = ball.shadow.initial.x
 		ball.progress = 0
 		ball.path = nil
-		ball.animation.state = 'ready'
 
 	end
 
 
-	function ball.draw()
+	function ball.draw(kick)
 
-		if ball.animation.state == 'ready' then
+		if kick:is_ready() then
 
 			love.graphics.draw(ball.shadow.animation.ready, ball.shadow.x, ball.shadow.y)
 			love.graphics.draw(ball.animation.ready, ball.x, ball.y)
 
-		elseif ball.animation.state == 'moving' then
+		elseif kick:is_in_progress() then
 			
 			ball.shadow.animation.moving:draw(ball.shadow.x, ball.shadow.y, 0, 1, 1)
 			ball.animation.moving:draw(ball.x, ball.y, 0, 1, 1)
+
+		elseif kick:is_complete() then
+			love.graphics.draw(ball.shadow.animation.complete, ball.shadow.x, ball.y + 5)
+			love.graphics.draw(ball.animation.complete, ball.x, ball.y)
 
 		end
 		

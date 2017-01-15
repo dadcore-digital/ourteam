@@ -142,7 +142,7 @@ function love.draw()
 
 			bg.draw()
 			player.draw()
-			ball.draw()
+			ball.draw(kick)
 		
 		camera:unset()
 
