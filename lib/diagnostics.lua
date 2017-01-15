@@ -29,6 +29,9 @@ local diagnostics = {}
 				'is_in_progress: ' .. tostring(kick:is_in_progress()),
 				'is_complete: ' .. tostring(kick:is_complete()),
 
+				'','[ CAMERA ]',
+				'camera.x: ' .. tostring(camera.x),
+
 			 }
 
 		diagnostics.area = {0, 0, 300, 720}

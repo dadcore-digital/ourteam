@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = false
+debug = true
 
 local k = require "vendor/katsudo"
 
@@ -8,6 +8,7 @@ bg 				= require 'lib/background'
 player 			= require 'lib/player'
 ball 			= require 'lib/ball'
 kick 			= require 'lib/kick'
+crowd			= require 'lib/crowd'
 meter 			= require 'lib/meter'
 message 		= require 'lib/message'
 diagnostics 	= require 'lib/diagnostics'
@@ -29,6 +30,9 @@ function love.load(arg)
 	love.graphics.setBackgroundColor( 0, 0, 0 )
 	frame_img = love.graphics.newImage('assets/graphics/backgrounds/monitor_Frame.png')
 
+	-- Crowd
+	crowd:fill_seats(4700, 10)
+
 	-- Constants
 	goal = { x = 3900 }
 	interval = 100
@@ -39,6 +43,9 @@ function love.load(arg)
 	bg.animation.load()
 
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
+
+	-- Temp Debug Stuff
+	camera.x = 4160
 
 end
 
@@ -142,6 +149,7 @@ function love.draw()
 
 			bg.draw()
 			player.draw()
+			crowd:draw()
 			ball.draw(kick)
 		
 		camera:unset()
