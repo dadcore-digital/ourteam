@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = true
+debug = false
 
 local k = require "vendor/katsudo"
 
@@ -69,6 +69,10 @@ function love.update(dt)
 	-- Get that meter moving
 	meter.fluctuate() 
 
+	--! Crowd is anxiously awaiting kick off !--
+	crowd:antsy(dt)
+
+
 	--! Kick off Phase !--
 	-- Player is running towards the ball --
 	if player:is_in_progress() and not player.can_kick() then
@@ -120,7 +124,6 @@ function love.update(dt)
 		end
 
 	end
-
 
 end
 
