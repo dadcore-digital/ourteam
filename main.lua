@@ -2,6 +2,7 @@ io.stdout:setvbuf('no')
 debug = false
 
 local k = require "vendor/katsudo"
+local push = require "vendor/push"
 
 camera 	  		= require 'lib/camera'
 bg 				= require 'lib/background'
@@ -18,8 +19,10 @@ diagnostics 	= require 'lib/diagnostics'
 function love.load(arg)
 
 	-- Window Settings
-	love.window.setMode( 1280, 720)
-
+	local gameWidth, gameHeight = 1280, 720 --fixed game resolution
+	local windowWidth, windowHeight = love.window.getDesktopDimensions()
+	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = true })
+	
 	-- Shaders
 	post_effect = require 'lib/shaders'
 
@@ -45,7 +48,9 @@ function love.load(arg)
 	if arg[#arg] == "-debug" then require("mobdebug").start() end
 
 	-- Temp Debug Stuff
-	camera.x = 4160
+	if debug then
+		camera.x = 4160
+	end
 
 end
 
@@ -68,9 +73,6 @@ function love.update(dt)
 	--! Power meter start /stop !--
 	-- Get that meter moving
 	meter.fluctuate() 
-
-	--! Crowd is anxiously awaiting kick off !--
-	crowd:antsy(dt)
 
 
 	--! Kick off Phase !--
@@ -146,6 +148,9 @@ end
 
 function love.draw()
 
+
+	push:start()
+
 	post_effect:draw(function()
 
 		camera:set()
@@ -172,7 +177,7 @@ function love.draw()
 
 	-- Diagnostic Panel
 	diagnostics:draw(debug, diag_data)
-
+	push:finish()
 end
 
 
