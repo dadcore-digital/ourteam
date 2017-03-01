@@ -57,42 +57,6 @@ local crowd = {}
 	end
 
 
-	-- function crowd:antsy(dt)
-	-- 	for r = 1, self.rows do
-	-- 		for c = 1, self.cols do
-
-	-- 			spectator = self.seating[r][c]
-
-	-- 			if spectator.state == 'standing' and spectator.counter < 4 then
-	-- 				spectator.y = spectator.y - (crowd.speed * dt) 
-	-- 				spectator.counter = spectator.counter + 1
-	-- 			elseif spectator.state == 'standing' and spectator.counter >= 4 then
-	-- 				spectator.state = 'sitting'
-	-- 				spectator.counter = spectator.counter - 1
-	-- 			end
-
-	-- 			if spectator.state == 'sitting' and spectator.counter > 0 then					
-	-- 				spectator.y = spectator.y + (crowd.speed * dt)
-	-- 				spectator.counter = spectator.counter - 1
-	-- 			elseif spectator.state == 'sitting' and spectator.counter == 0 then
-	-- 				spectator.state = 'seated'
-	-- 				self.moving.counter = self.moving.counter - 1
-	-- 			end
-
-
-	-- 			if math.random(25000) == 1 then
-	-- 				if spectator.state == 'seated' and self.moving.counter < self.moving.max then
-	-- 					spectator.state = 'standing'
-	-- 					self.moving.counter = self.moving.counter + 1
-	-- 				end
-	-- 			end
-
-
-	-- 		end
-	-- 	end
-	-- end
-
-
 	function crowd:draw()
 
 		for r = 1, self.rows do

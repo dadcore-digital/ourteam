@@ -1,5 +1,5 @@
 io.stdout:setvbuf('no')
-debug = false
+debug = true
 
 local k = require "vendor/katsudo"
 local push = require "vendor/push"
@@ -149,41 +149,44 @@ end
 function love.draw()
 
 
-	push:start()
+	-- push:start()
 
-	post_effect:draw(function()
+		post_effect:draw(function()
 
-		camera:set()
+			camera:set()
 
-			bg.draw()
-			player.draw()
-			crowd:draw()
-			ball.draw(kick)
-		
-		camera:unset()
-
-
-		meter.draw()
-		message.kick.draw(msg_font, kick)
+				bg.draw()
+				player.draw()
+				crowd:draw()
+				ball.draw(kick)
+			
+			camera:unset()
 
 
-	end) -- end post processing
+			meter.draw()
+			message.kick.draw(msg_font, kick)
 
-	-- Monitor Frame
-	love.graphics.draw(frame_img, 0, 0)
 
-	-- Reset color
-	love.graphics.setColor(255, 255, 255, 255)
+		end) -- end post processing
 
-	-- Diagnostic Panel
-	diagnostics:draw(debug, diag_data)
-	push:finish()
+		-- Monitor Frame
+		love.graphics.draw(frame_img, 0, 0)
+
+		-- Reset color
+		love.graphics.setColor(255, 255, 255, 255)
+
+		-- Diagnostic Panel
+		diagnostics:draw(debug, diag_data)
+
+	-- push:finish()
 end
 
 
 
 
-
+function love.resize(w, h)
+  push:resize(w, h)
+end
 
 
 
